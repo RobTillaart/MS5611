@@ -2,11 +2,12 @@
 //    FILE: MS5611.cpp
 //  AUTHOR: Rob Tillaart
 //          Erni - testing/fixes
-// VERSION: 0.2.0
+// VERSION: 0.2.1
 // PURPOSE: MS5611 Temperature & Humidity library for Arduino
 //     URL:
 //
 // HISTORY:
+// 0.2.1  2020-06-28 fix #1 min macro compile error
 // 0.2.0  2020-06-21 refactor; #pragma once; 
 // 0.1.8  fix #109 incorrect constants (thanks to flauth)
 // 0.1.7  revert double to float (issue 33)
@@ -69,11 +70,13 @@ void MS5611::begin()
   C[4] = 7.8125E-3;
   C[5] = 256;
   C[6] = 1.1920928955E-7;
+  // read factory calibrations from EEPROM.
   for (uint8_t reg = 0; reg < 7; reg++)
   {
-    // C[0] not used; this way indices match datasheet.
-    // C[7] == CRC skipped.
-    C[reg] *= readProm(reg);        // factory callibration
+    // used indices match datasheet.
+    // C[0] == manufacturer - read but not used;
+    // C[7] == CRC - skipped.
+    C[reg] *= readProm(reg);
   }
 }
 
@@ -146,7 +149,10 @@ void MS5611::convert(const uint8_t addr, uint8_t bits)
 
 uint16_t MS5611::readProm(uint8_t reg)
 {
-  reg = min(reg, 7);      // constrain(reg, 0, 7) but reg is an uint so...
+  // last EEPROM register is CRC - Page13 datasheet.
+  uint8_t promCRCRegister = 7;
+  if (reg > promCRCRegister) return 0;
+
   uint8_t offset = reg * 2;
   command(MS5611_CMD_READ_PROM + offset);
   if (_result == 0)
