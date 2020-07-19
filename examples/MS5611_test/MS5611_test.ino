@@ -24,7 +24,7 @@ void setup()
 void loop()
 {
   int result = MS5611.read();
-  if (result != 0)
+  if (result != MS5611_READ_OK)
   {
     Serial.print("Error in read: ");
     Serial.println(result);
