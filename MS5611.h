@@ -3,7 +3,7 @@
 //    FILE: MS5611.h
 //  AUTHOR: Rob Tillaart
 //          Erni - testing/fixes
-// VERSION: 0.2.1
+// VERSION: 0.2.2
 // PURPOSE: Arduino library for MS5611 temperature and pressure sensor
 //     URL: https://github.com/RobTillaart/MS5611
 //
@@ -14,16 +14,19 @@
 #include "Arduino.h"
 #include "Wire.h"
 
-#define MS5611_LIB_VERSION (F("0.2.1"))
+#define MS5611_LIB_VERSION (F("0.2.2"))
 
-#define MS5611_READ_OK  0
+#define MS5611_READ_OK        0
+#define MS5611_NOT_READ       -999
 
 class MS5611
 {
 public:
   explicit  MS5611(uint8_t deviceAddress);
 
-  void      begin();
+  bool      begin();
+  bool      isConnected();
+
   // init() will be obsolete in the future
   void      init()    { begin(); };
 
@@ -47,7 +50,7 @@ private:
   void      convert(const uint8_t addr, uint8_t bits);
   uint32_t  readADC();
   uint16_t  readProm(uint8_t reg);
-  void      command(const uint8_t command);
+  int       command(const uint8_t command);
 
   uint8_t  _address;
   int32_t  _temperature;

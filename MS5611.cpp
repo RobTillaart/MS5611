@@ -2,34 +2,36 @@
 //    FILE: MS5611.cpp
 //  AUTHOR: Rob Tillaart
 //          Erni - testing/fixes
-// VERSION: 0.2.1
+// VERSION: 0.2.2
 // PURPOSE: MS5611 Temperature & Humidity library for Arduino
-//     URL:
+//     URL: https://github.com/RobTillaart/MS5611
 //
-// HISTORY:
-// 0.2.1  2020-06-28 fix #1 min macro compile error
-// 0.2.0  2020-06-21 refactor; #pragma once; 
-// 0.1.8  fix #109 incorrect constants (thanks to flauth)
-// 0.1.7  revert double to float (issue 33)
-// 0.1.6  2015-07-12 refactor
-// 0.1.05 moved 6 float multiplies to init  [adds ~70 bytes !!!]
-//        moved the MS5611_LIB_VERSION to PROGMEM
-// 0.1.04 changed float to double (for platforms which support it)
-//        changed divisions in multiplications
-//        fixed uint32_t readADC()
-//        reduced size of C array by 1 float
-//        added second order temperature compensation
-// 0.1.03 changed math to float [test version]
-// 0.1.02 fixed bug return value read()
-//        fixed bug #bits D2
-//        added MS5611_READ_OK
-//        added inline getters for temp & pres & lastresult.
-//        adjusted delay's based on datasheet
-//        merged convert functions
-//        fixed offset in readProm()
-// 0.1.01 small refactoring
-// 0.1.00 added temperature and Pressure code
-// 0.0.00 initial version by Rob Tillaart (15-okt-2014)
+//  HISTORY:
+//  0.2.2   2021-01-01  add Arduino-CI + unit tests + isConnected()
+//  0.2.1   2020-06-28  fix #1 min macro compile error
+//  0.2.0   2020-06-21  refactor; #pragma once; 
+//  0.1.8               fix #109 incorrect constants (thanks to flauth)
+//  0.1.7               revert double to float (issue 33)
+//  0.1.6   2015-07-12  refactor
+//  0.1.05  moved 6 float multiplies to init  [adds ~70 bytes !!!]
+//          moved the MS5611_LIB_VERSION to PROGMEM
+//  0.1.04  changed float to double (for platforms which support it)
+//          changed divisions in multiplications
+//          fixed uint32_t readADC()
+//          reduced size of C array by 1 float
+//          added second order temperature compensation
+//  0.1.03  changed math to float [test version]
+//  0.1.02  fixed bug return value read()
+//          fixed bug #bits D2
+//          added MS5611_READ_OK
+//          added inline getters for temp & pres & lastresult.
+//          adjusted delay's based on datasheet
+//          merged convert functions
+//          fixed offset in readProm()
+//  0.1.01  small refactoring
+//  0.1.00  added temperature and Pressure code
+//  0.0.00  initial version by Rob Tillaart (15-okt-2014)
+
 
 #include "MS5611.h"
 
@@ -48,16 +50,20 @@
 //
 MS5611::MS5611(uint8_t deviceAddress)
 {
-  _address = deviceAddress;
-  _temperature = -999;
-  _pressure = -999;
-  _result = -999;
-  _lastRead = 0;
+  // TODO check address range
+  _address     = deviceAddress;
+  _temperature = MS5611_NOT_READ;
+  _pressure    = MS5611_NOT_READ;
+  _result      = MS5611_NOT_READ;
+  _lastRead    = 0;
 }
 
 
-void MS5611::begin()
+bool MS5611::begin()
 {
+  Wire.begin();
+  if (! isConnected()) return false;
+  
   command(MS5611_CMD_RESET);
   delay(3);
 
@@ -78,6 +84,14 @@ void MS5611::begin()
     // C[7] == CRC - skipped.
     C[reg] *= readProm(reg);
   }
+  return true;
+}
+
+
+bool MS5611::isConnected()
+{
+  Wire.beginTransmission(_address);
+  return (Wire.endTransmission() == 0);
 }
 
 
@@ -147,6 +161,7 @@ void MS5611::convert(const uint8_t addr, uint8_t bits)
   delay(del[offset/2]);
 }
 
+
 uint16_t MS5611::readProm(uint8_t reg)
 {
   // last EEPROM register is CRC - Page13 datasheet.
@@ -169,6 +184,7 @@ uint16_t MS5611::readProm(uint8_t reg)
   return 0;
 }
 
+
 uint32_t MS5611::readADC()
 {
   command(MS5611_CMD_READ_ADC);
@@ -187,12 +203,14 @@ uint32_t MS5611::readADC()
   return 0UL;
 }
 
-void MS5611::command(const uint8_t command)
+
+int MS5611::command(const uint8_t command)
 {
   yield();
   Wire.beginTransmission(_address);
   Wire.write(command);
   _result = Wire.endTransmission();
+  return _result;         // TODO prep better error handling  0 == OK.
 }
 
 // -- END OF FILE --
