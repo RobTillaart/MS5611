@@ -79,8 +79,6 @@ unittest(test_constructor)
 
 unittest(test_read_sensor)
 {
-  fprintf(stderr, "VERSION: %s\n", MS5611_LIB_VERSION );
-
   MS5611 sensor(0x77);
 
   assertTrue(sensor.begin())
