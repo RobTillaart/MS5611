@@ -71,7 +71,7 @@ unittest(test_constructor)
 
   assertEqual(MS5611_NOT_READ, sensor.getTemperature());
   assertEqual(MS5611_NOT_READ, sensor.getPressure());
-  assertEqual(MS5611_NOT_READ, sensor.getLastResult());
+  assertEqual(0, sensor.getLastResult());
   assertEqual(0, sensor.lastRead());
 
 }
