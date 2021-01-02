@@ -81,7 +81,7 @@ unittest(test_read_sensor)
 {
   MS5611 sensor(0x77);
 
-  assertTrue(sensor.begin())
+  assertTrue(sensor.begin());
 
   assureEqual(MS5611_READ_OK, sensor.read());
 
