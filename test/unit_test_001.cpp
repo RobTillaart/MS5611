@@ -63,8 +63,8 @@ unittest(test_constructor)
   MS5611 sensor(0x77);
   assertTrue(sensor.begin());
 
-  assertEqualFloat(-9.99, sensor.getTemperature());
-  assertEqualFloat(-9.99, sensor.getPressure());
+  assertEqualFloat(-9.99, sensor.getTemperature(), 0.01);
+  assertEqualFloat(-9.99, sensor.getPressure(), 0.01);
   assertEqual(0, sensor.getLastResult());
   assertEqual(0, sensor.lastRead());
 
