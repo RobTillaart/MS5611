@@ -1,11 +1,12 @@
-# Syntax Coloring Map For MS5611
+# Syntax Colouring Map For MS5611
 
-# Datatypes (KEYWORD1)
+# Data types (KEYWORD1)
 MS5611	KEYWORD1
 
 # Methods and Functions (KEYWORD2)
 begin	KEYWORD2
 isConnected	KEYWORD2
+
 read	KEYWORD2
 getTemperature	KEYWORD2
 getPressure	KEYWORD2

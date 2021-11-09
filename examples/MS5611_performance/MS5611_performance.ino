@@ -22,19 +22,32 @@ void setup()
   Serial.print("MS5611 lib version: ");
   Serial.println(MS5611_LIB_VERSION);
 
-  bool b = MS5611.begin();
-  Serial.println(b ? "found" : "not found");
+  if (MS5611.begin() == true)
+  {
+    Serial.println("MS5611 found.");
+  }
+  else
+  {
+    Serial.println("MS5611 not found. halt.");
+    while(1);
+  }
 
   count = 0;
-  Serial.println("CNT\tDUR\tRES\tTEMP\tPRES");
   delay(1000);
 }
+
 
 void loop()
 {
   start = micros();
   int result = MS5611.read();
   stop = micros();
+
+  if (count % 20 == 0)
+  {
+    Serial.println();
+    Serial.println("CNT\tDUR\tRES\tTEMP\tPRES");
+  }
 
   Serial.print(count);
   count++;

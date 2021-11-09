@@ -29,6 +29,7 @@
 // assertNAN(arg);                                 // isnan(a)
 // assertNotNAN(arg);                              // !isnan(a)
 
+
 #include <ArduinoUnitTests.h>
 
 #include "Arduino.h"
@@ -43,31 +44,18 @@ unittest_teardown()
 {
 }
 
-/*
-unittest(test_new_operator)
-{
-  assertEqualINF(exp(800));
-  assertEqualINF(0.0/0.0);
-  assertEqualINF(42);
-  
-  assertEqualNAN(INFINITY - INFINITY);
-  assertEqualNAN(0.0/0.0);
-  assertEqualNAN(42);
-}
-*/
 
 unittest(test_constructor)
 {
-  fprintf(stderr, "VERSION: %s\n", MS5611_LIB_VERSION );
+  fprintf(stderr, "VERSION: %s\n", (char *) MS5611_LIB_VERSION );
 
   MS5611 sensor(0x77);
   assertTrue(sensor.begin());
 
   assertEqualFloat(-9.99, sensor.getTemperature(), 0.01);
-  assertEqualFloat(-9.99, sensor.getPressure(), 0.01);
+  assertEqualFloat(-9.99, sensor.getPressure(),    0.01);
   assertEqual(0, sensor.getLastResult());
   assertEqual(0, sensor.lastRead());
-
 }
 
 
