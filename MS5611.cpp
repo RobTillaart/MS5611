@@ -7,13 +7,16 @@
 //     URL: https://github.com/RobTillaart/MS5611
 //
 //  HISTORY:
+//
 //  0.3.0   2021-01-27  fix #9 math error (thanks to Emiel Steerneman)
 //                      add Wire1..WireN support (e.g. teensy)
 //                      changed getTemperature() and getPressure()
 //                      add reset()
+//
 //  0.2.2   2021-01-01  add Arduino-CI + unit tests + isConnected()
 //  0.2.1   2020-06-28  fix #1 min macro compile error
 //  0.2.0   2020-06-21  refactor; #pragma once; 
+//
 //  0.1.8               fix #109 incorrect constants (thanks to flauth)
 //  0.1.7               revert double to float (issue 33)
 //  0.1.6   2015-07-12  refactor

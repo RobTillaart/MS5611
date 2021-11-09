@@ -16,12 +16,12 @@
 #include "Wire.h"
 
 
-#define MS5611_LIB_VERSION (F("0.3.0"))
+#define MS5611_LIB_VERSION        (F("0.3.0"))
 
 
-#define MS5611_READ_OK        0
-#define MS5611_ERROR_2        2         // low level I2C error
-#define MS5611_NOT_READ       -999
+#define MS5611_READ_OK            0
+#define MS5611_ERROR_2            2         // low level I2C error
+#define MS5611_NOT_READ           -999
 
 
 class MS5611
@@ -52,7 +52,8 @@ public:
   int      getLastResult() const  { return _result; };
 
   // last time in millis() that the sensor has been read.
-  uint32_t lastRead()           { return _lastRead; };
+  uint32_t lastRead()             { return _lastRead; };
+
 
 private:
   void     convert(const uint8_t addr, uint8_t bits);
