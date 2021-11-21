@@ -21,5 +21,6 @@
   "version": "0.3.0",
   "license": "MIT",
   "frameworks": "arduino",
-  "platforms": "*"
+  "platforms": "*",
+  "headers": "MS5611.h"
 }
