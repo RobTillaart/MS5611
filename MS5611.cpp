@@ -2,12 +2,13 @@
 //    FILE: MS5611.cpp
 //  AUTHOR: Rob Tillaart
 //          Erni - testing/fixes
-// VERSION: 0.3.0
+// VERSION: 0.3.1
 // PURPOSE: MS5611 Temperature & Humidity library for Arduino
 //     URL: https://github.com/RobTillaart/MS5611
 //
 //  HISTORY:
 //
+//  0.3.1   2021-12-21  update library.json, readme, license, minor edits
 //  0.3.0   2021-01-27  fix #9 math error (thanks to Emiel Steerneman)
 //                      add Wire1..WireN support (e.g. teensy)
 //                      changed getTemperature() and getPressure()
@@ -31,7 +32,7 @@
 //  0.1.02  fixed bug return value read()
 //          fixed bug #bits D2
 //          added MS5611_READ_OK
-//          added inline getters for temp & pres & lastresult.
+//          added inline getters for temp & pres & lastResult.
 //          adjusted delay's based on datasheet
 //          merged convert functions
 //          fixed offset in readProm()
@@ -249,4 +250,6 @@ int MS5611::command(const uint8_t command)
   return _result;
 }
 
+
 // -- END OF FILE --
+

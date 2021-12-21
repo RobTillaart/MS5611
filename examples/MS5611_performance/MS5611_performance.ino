@@ -33,6 +33,7 @@ void setup()
   }
 
   count = 0;
+  Serial.println("CNT\tDUR\tRES\tTEMP\tPRES");
   delay(1000);
 }
 
@@ -63,6 +64,7 @@ void loop()
 
   delay(1000);
 }
+
 
 // -- END OF FILE --
 
