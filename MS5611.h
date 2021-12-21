@@ -3,25 +3,21 @@
 //    FILE: MS5611.h
 //  AUTHOR: Rob Tillaart
 //          Erni - testing/fixes
-// VERSION: 0.3.0
+// VERSION: 0.3.1
 // PURPOSE: Arduino library for MS5611 temperature and pressure sensor
 //     URL: https://github.com/RobTillaart/MS5611
-//
-// HISTORY:
-// see MS5611.cpp file
-//
 
 
 #include "Arduino.h"
 #include "Wire.h"
 
 
-#define MS5611_LIB_VERSION        (F("0.3.0"))
+#define MS5611_LIB_VERSION                    (F("0.3.1"))
 
 
-#define MS5611_READ_OK            0
-#define MS5611_ERROR_2            2         // low level I2C error
-#define MS5611_NOT_READ           -999
+#define MS5611_READ_OK                        0
+#define MS5611_ERROR_2                        2         // low level I2C error
+#define MS5611_NOT_READ                       -999
 
 
 class MS5611
@@ -67,8 +63,10 @@ private:
   int      _result;
   float    C[7];
   uint32_t _lastRead;
-  
+
   TwoWire * _wire;
 };
 
+
 // -- END OF FILE --
+
