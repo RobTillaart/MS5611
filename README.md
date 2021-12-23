@@ -36,7 +36,7 @@ The device address is 0x76 or 0x77 depending on the CSB pin.
 - **int read()** the actual reading of the sensor. Returns MS5611_READ_OK upon success
 - **void setOversampling(osr_t uosr)** sets the amount of oversampling. see test example for more info
 - **osr_t getOversampling()** returns amount of oversampling.
-- **float getTemperature()** returns temperature in �C. Subsequent calls will return same value until a new **read()** is called.
+- **float getTemperature()** returns temperature in °C. Subsequent calls will return same value until a new **read()** is called.
 - **float getPressure()** pressure is in mBar. Subsequent calls will return same value until a new **read()** is called.
 - **int getLastResult()** checks last I2C communication (replace with more informative error handling?)
 - **uint32_t lastRead()** last time when **read()** was called in millis() since startup .
