@@ -59,6 +59,7 @@
 MS5611::MS5611(uint8_t deviceAddress)
 {
   _address     = deviceAddress;
+  _osr         = 8;
   _temperature = MS5611_NOT_READ;
   _pressure    = MS5611_NOT_READ;
   _result      = MS5611_NOT_READ;
@@ -129,17 +130,17 @@ void MS5611::reset()
 }
 
 
-int MS5611::read(uint8_t bits)
+int MS5611::read()
 {
   // VARIABLES NAMES BASED ON DATASHEET
   // ALL MAGIC NUMBERS ARE FROM DATASHEET
 
-  convert(MS5611_CMD_CONVERT_D1, bits);
+  convert(MS5611_CMD_CONVERT_D1, _osr);
   if (_result) return _result;
   uint32_t D1 = readADC();
   if (_result) return _result;
 
-  convert(MS5611_CMD_CONVERT_D2, bits);
+  convert(MS5611_CMD_CONVERT_D2, _osr);
   if (_result) return _result;
   uint32_t D2 = readADC();
   if (_result) return _result;
@@ -183,6 +184,11 @@ int MS5611::read(uint8_t bits)
   return MS5611_READ_OK;
 }
 
+
+void MS5611::setOversampling(osr_t uosr)
+{
+  _osr = (uint8_t)uosr;
+}
 
 /////////////////////////////////////////////////////
 //
