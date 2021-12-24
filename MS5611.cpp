@@ -2,12 +2,13 @@
 //    FILE: MS5611.cpp
 //  AUTHOR: Rob Tillaart
 //          Erni - testing/fixes
-// VERSION: 0.3.1
+// VERSION: 0.3.2
 // PURPOSE: MS5611 Temperature & Humidity library for Arduino
 //     URL: https://github.com/RobTillaart/MS5611
 //
 //  HISTORY:
 //
+//  0.3.2   2021-12-24  add get/set oversampling, read() (thanks to LyricPants66133)
 //  0.3.1   2021-12-21  update library.json, readme, license, minor edits
 //  0.3.0   2021-01-27  fix #9 math error (thanks to Emiel Steerneman)
 //                      add Wire1..WireN support (e.g. teensy)
@@ -58,12 +59,12 @@
 //
 MS5611::MS5611(uint8_t deviceAddress)
 {
-  _address     = deviceAddress;
-  _osr         = 8;
-  _temperature = MS5611_NOT_READ;
-  _pressure    = MS5611_NOT_READ;
-  _result      = MS5611_NOT_READ;
-  _lastRead    = 0;
+  _address      = deviceAddress;
+  _samplingRate = OSR_ULTRA_LOW;
+  _temperature  = MS5611_NOT_READ;
+  _pressure     = MS5611_NOT_READ;
+  _result       = MS5611_NOT_READ;
+  _lastRead     = 0;
 }
 
 
@@ -130,17 +131,17 @@ void MS5611::reset()
 }
 
 
-int MS5611::read()
+int MS5611::read(uint8_t bits)
 {
   // VARIABLES NAMES BASED ON DATASHEET
   // ALL MAGIC NUMBERS ARE FROM DATASHEET
 
-  convert(MS5611_CMD_CONVERT_D1, _osr);
+  convert(MS5611_CMD_CONVERT_D1, bits);
   if (_result) return _result;
   uint32_t D1 = readADC();
   if (_result) return _result;
 
-  convert(MS5611_CMD_CONVERT_D2, _osr);
+  convert(MS5611_CMD_CONVERT_D2, bits);
   if (_result) return _result;
   uint32_t D2 = readADC();
   if (_result) return _result;
@@ -185,9 +186,9 @@ int MS5611::read()
 }
 
 
-void MS5611::setOversampling(osr_t uosr)
+void MS5611::setOversampling(osr_t samplingRate)
 {
-  _osr = (uint8_t)uosr;
+  _samplingRate = (uint8_t) samplingRate;
 }
 
 /////////////////////////////////////////////////////
