@@ -186,9 +186,9 @@ int MS5611::read(uint8_t bits)
 }
 
 
-void MS5611::setOversampling(osr_t uosr)
+void MS5611::setOversampling(osr_t samplingRate)
 {
-  _osr = (uint8_t)uosr;
+  _samplingRate = (uint8_t) samplingRate;
 }
 
 /////////////////////////////////////////////////////

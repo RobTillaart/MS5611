@@ -50,7 +50,7 @@ public:
   inline int read() { return read( (uint8_t) _samplingRate); };  // uses the preset oversampling
 
   // sets oversampling to a value between 8 and 12
-  void     setOversampling(osr_t uosr);
+  void     setOversampling(osr_t samplingRate);
 
   // oversampling rate is in osr_t
   osr_t    getOversampling() const { return (osr_t) _samplingRate; };
