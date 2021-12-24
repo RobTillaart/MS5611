@@ -47,7 +47,7 @@ public:
   // the actual reading of the sensor;
   // returns MS5611_READ_OK upon success
   int      read(uint8_t bits);
-  inline int read() { return read(uint8_t _samplingRate); };  // uses the preset oversampling
+  inline int read() { return read( (uint8_t) _samplingRate); };  // uses the preset oversampling
 
   // sets oversampling to a value between 8 and 12
   void     setOversampling(osr_t uosr);

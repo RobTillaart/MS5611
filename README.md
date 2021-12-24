@@ -33,14 +33,14 @@ The device address is 0x76 or 0x77 depending on the CSB pin.
 - **bool begin(TwoWire \*wire = &Wire)** for UNO and alike, optionally set Wire interface. Initializes internals.
 - **bool isConnected()** checks availability of device address on the I2C bus.
 - **reset()** resets the chip and loads constants from its ROM.
-- **int read(uint8_t bits)** the actual reading of the sensor. Returns MS5611_READ_OK upon success
-- **int read()** the actual reading of the sensor. Returns MS5611_READ_OK upon success
+- **int read(uint8_t bits)** the actual reading of the sensor. Returns MS5611_READ_OK upon success.
+- **int read()** the actual reading of the sensor. Returns MS5611_READ_OK upon success.
 - **void setOversampling(osr_t uosr)** sets the amount of oversampling. see test example for more info.
 - **osr_t getOversampling()** returns amount of oversampling.
 - **float getTemperature()** returns temperature in °C. Subsequent calls will return same value until a new **read()** is called.
 - **float getPressure()** pressure is in mBar. Subsequent calls will return same value until a new **read()** is called.
 - **int getLastResult()** checks last I2C communication (replace with more informative error handling?)
-- **uint32_t lastRead()** last time when **read()** was called in millis() since startup .
+- **uint32_t lastRead()** last time when **read()** was called in millis() since startup.
 
 
 ## Disclaimer
@@ -61,6 +61,6 @@ See examples
 - create a SPI based library (same base class if possible?)
 - proper error handling
 - redo lower level functions?
-- handle the read + math of temperature first? (need hw to test)
+- handle the read + math of temperature first? (need hardware to test)
 -
 
