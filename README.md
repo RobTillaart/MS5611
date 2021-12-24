@@ -33,6 +33,7 @@ The device address is 0x76 or 0x77 depending on the CSB pin.
 - **bool begin(TwoWire \*wire = &Wire)** for UNO and alike, optionally set Wire interface. Initializes internals.
 - **bool isConnected()** checks availability of device address on the I2C bus.
 - **reset()** resets the chip and loads constants from its ROM.
+- **int read(uint8_t bits)** the actual reading of the sensor. Returns MS5611_READ_OK upon success
 - **int read()** the actual reading of the sensor. Returns MS5611_READ_OK upon success
 - **void setOversampling(osr_t uosr)** sets the amount of oversampling. see test example for more info
 - **osr_t getOversampling()** returns amount of oversampling.

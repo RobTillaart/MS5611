@@ -41,7 +41,7 @@ void loop()
   delay(1000);
 
   start = micros();
-  int result = MS5611.read();
+  int result = MS5611.read();   // uses default OSR_STANDARD
   stop = micros();
 
   if (count % 20 == 0)
