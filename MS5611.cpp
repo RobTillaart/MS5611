@@ -131,12 +131,6 @@ void MS5611::reset()
 }
 
 
-inline int MS5611::read()
-{
-  return read(_samplingRate);
-}
-
-
 int MS5611::read(uint8_t bits)
 {
   // VARIABLES NAMES BASED ON DATASHEET

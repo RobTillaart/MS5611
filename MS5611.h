@@ -47,13 +47,13 @@ public:
   // the actual reading of the sensor;
   // returns MS5611_READ_OK upon success
   int      read(uint8_t bits);
-  inline int read();    // uses the preset oversampling
+  inline int read() { return read(uint8_t _samplingRate) };  // uses the preset oversampling
 
   // sets oversampling to a value between 8 and 12
   void     setOversampling(osr_t uosr);
 
   // oversampling rate is in osr_t
-  osr_t    getOversampling() const { return (osr_t) _osr; };
+  osr_t    getOversampling() const { return (osr_t) _samplingRate; };
 
   // temperature is in ²C
   float    getTemperature() const  { return _temperature * 0.01; };
