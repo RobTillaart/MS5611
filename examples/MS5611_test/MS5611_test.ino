@@ -28,6 +28,16 @@ void setup()
     Serial.println("MS5611 not found. halt.");
     while(1);
   }
+  /*
+  There are 5 oversampling settings, each corresponding to a different amount of miliseconds
+  The higher the oversampling, the more accurate the reading will be, however the longer it will take.
+  OSR_ULTRA_HIGH -> 10 millis
+  OSR_HIGH       -> 5 millis
+  OSR_STANDARD   -> 3 millis (default)
+  OSR_LOW        -> 2 millis
+  OSR_ULTRA_LOW  -> 1 millis
+  */
+  MS5611.setOversampling(OSR_ULTRA_HIGH);
 }
 
 
@@ -41,7 +51,7 @@ void loop()
   }
   else
   {
-    Serial.print("T:\t");
+    Serial.print("\nT:\t");
     Serial.print(MS5611.getTemperature(), 2);
     Serial.print("\tP:\t");
     Serial.print(MS5611.getPressure(), 2);
