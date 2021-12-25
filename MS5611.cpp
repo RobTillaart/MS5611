@@ -7,7 +7,7 @@
 //     URL: https://github.com/RobTillaart/MS5611
 //
 //  HISTORY:
-//
+//  0.3.2.1 2021-12-25  Update oversampling timings to reduce time spent waiting
 //  0.3.2   2021-12-24  add get/set oversampling, read() (thanks to LyricPants66133)
 //  0.3.1   2021-12-21  update library.json, readme, license, minor edits
 //  0.3.0   2021-01-27  fix #9 math error (thanks to Emiel Steerneman)
@@ -197,12 +197,13 @@ void MS5611::setOversampling(osr_t samplingRate)
 //
 void MS5611::convert(const uint8_t addr, uint8_t bits)
 {
-  uint8_t del[5] = {1, 2, 3, 5, 10};
+  //Values from page 2 datasheet
+  uint16_t del[5] = {500, 1100, 2100, 4100, 8220};
 
   bits = constrain(bits, 8, 12);
   uint8_t offset = (bits - 8) * 2;
   command(addr + offset);
-  delay(del[offset/2]);
+  delayMicroseconds(del[offset/2]);
 }
 
 
