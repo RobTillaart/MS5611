@@ -110,16 +110,16 @@ bool MS5611::isConnected()
 void MS5611::reset()
 {
   command(MS5611_CMD_RESET);
-  delay(3);
+  delayMicroseconds(2800);
   // constants that were multiplied in read()
   // do this once and you save CPU cycles
   C[0] = 1;
-  C[1] = 32768L;
-  C[2] = 65536L;
-  C[3] = 3.90625E-3;
-  C[4] = 7.8125E-3;
-  C[5] = 256;
-  C[6] = 1.1920928955E-7;
+  C[1] = 32768L;          // SENSt1 = C[1] * 2^15
+  C[2] = 65536L;          // OFFt1 = C[2] * 2^16
+  C[3] = 3.90625E-3;      // TCS = C[3] / 2^6
+  C[4] = 7.8125E-3;       // TCO = C[4] / 2^7
+  C[5] = 256;             // Tref = C[5] * 2^8
+  C[6] = 1.1920928955E-7; // TEMPSENS = C[6] / 2^23
   // read factory calibrations from EEPROM.
   for (uint8_t reg = 0; reg < 7; reg++)
   {
