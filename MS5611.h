@@ -37,11 +37,11 @@
 
 enum osr_t
 {
-    OSR_ULTRA_HIGH = 12, // 10 millis
-    OSR_HIGH       = 11, //  5 millis
-    OSR_STANDARD   = 10, //  3 millis
-    OSR_LOW        = 9,  //  2 millis
-    OSR_ULTRA_LOW  = 8   //  1 millis    Default = backwards compatible
+    OSR_ULTRA_HIGH = 12, // 8.22 millis
+    OSR_HIGH       = 11, //  4.1 millis
+    OSR_STANDARD   = 10, //  2.1 millis
+    OSR_LOW        = 9,  //  1.1 millis
+    OSR_ULTRA_LOW  = 8   //  0.5 millis    Default = backwards compatible
 };
 
 
