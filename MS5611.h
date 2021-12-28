@@ -1,4 +1,6 @@
 #pragma once
+// Can be set to I2C or SPI
+#define iSPI
 //
 //    FILE: MS5611.h
 //  AUTHOR: Rob Tillaart
@@ -9,13 +11,26 @@
 
 
 #include "Arduino.h"
+
+#ifdef iI2C
 #include "Wire.h"
+#endif
+
+#ifdef iSPI
+#include "SPI.h"
+#endif
 
 
 #define MS5611_LIB_VERSION                    (F("0.3.3"))
 
 
+#ifdef iI2C
 #define MS5611_READ_OK                        0
+#endif
+#ifdef iSPI
+#define MS5611_READ_OK                        254
+#endif
+
 #define MS5611_ERROR_2                        2         // low level I2C error
 #define MS5611_NOT_READ                       -999
 
@@ -33,12 +48,21 @@ enum osr_t
 class MS5611
 {
 public:
-  explicit MS5611(uint8_t deviceAddress);
-
 #if defined (ESP8266) || defined(ESP32)
   bool     begin(uint8_t sda, uint8_t scl, TwoWire *wire = &Wire);
 #endif
+
+//ensures that only one library needs to be included
+#ifdef iI2C
+  explicit MS5611(uint8_t deviceAddress);
   bool     begin(TwoWire *wire = &Wire);
+#endif
+
+#ifdef iSPI
+  explicit MS5611(uint8_t deviceAddress, SPISettings uspiSettings = SPISettings(2000000, MSBFIRST, SPI_MODE0)); // sensor does up to 20 MHZ, must be MSBFIRST, sensor supports mode0 and mode3
+  bool     begin(SPIClass *spi = &SPI);
+#endif
+
   bool     isConnected();
 
   // reset command + get constants
@@ -82,7 +106,14 @@ private:
   float    C[7];
   uint32_t _lastRead;
 
+  #ifdef iI2C
   TwoWire * _wire;
+  #endif
+  
+  #ifdef iSPI
+  SPIClass * _SPI;
+  SPISettings _spiSettings;
+  #endif
 };
 
 
