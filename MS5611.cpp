@@ -112,7 +112,7 @@ bool MS5611::begin(TwoWire * wire)
 #ifdef iSPI
 bool MS5611::begin(SPIClass * spi)
 {
-  _SPI = spi;
+  _SPI = SPI;
   _SPI->begin();
   if (! isConnected()) return false;
   
