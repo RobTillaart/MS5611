@@ -1,11 +1,12 @@
 #pragma once
 // Can be set to I2C or SPI
-#define iSPI
+#define iI2C
 //
 //    FILE: MS5611.h
 //  AUTHOR: Rob Tillaart
 //          Erni - testing/fixes
-// VERSION: 0.3.3
+//          Alfredo Colas - Oversampling fixes / SPI support
+// VERSION: 0.4.0
 // PURPOSE: Arduino library for MS5611 temperature and pressure sensor
 //     URL: https://github.com/RobTillaart/MS5611
 
@@ -21,16 +22,10 @@
 #endif
 
 
-#define MS5611_LIB_VERSION                    (F("0.3.3"))
+#define MS5611_LIB_VERSION                    (F("0.4.0"))
 
 
-#ifdef iI2C
 #define MS5611_READ_OK                        0
-#endif
-#ifdef iSPI
-#define MS5611_READ_OK                        254
-#endif
-
 #define MS5611_ERROR_2                        2         // low level I2C error
 #define MS5611_NOT_READ                       -999
 
