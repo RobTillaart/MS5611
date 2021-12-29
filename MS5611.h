@@ -1,11 +1,11 @@
 #pragma once
-// Can be set to I2C or SPI
+// Can be set to iI2C or iSPI
 #define iI2C
 //
 //    FILE: MS5611.h
 //  AUTHOR: Rob Tillaart
 //          Erni - testing/fixes
-//          Alfredo Colas - Oversampling fixes / SPI support
+//          Alfredo Colas(LyricPants66133)
 // VERSION: 0.4.0
 // PURPOSE: Arduino library for MS5611 temperature and pressure sensor
 //     URL: https://github.com/RobTillaart/MS5611
@@ -55,7 +55,7 @@ public:
 
 #ifdef iSPI
   explicit MS5611(uint8_t deviceAddress, SPISettings uspiSettings = SPISettings(2000000, MSBFIRST, SPI_MODE0)); // sensor does up to 20 MHZ, must be MSBFIRST, sensor supports mode0 and mode3
-  bool     begin(SPIClass *spi = &SPI);
+  bool     begin(SPIClass *SPI = &SPI);
 #endif
 
   bool     isConnected();

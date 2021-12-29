@@ -2,11 +2,13 @@
 //    FILE: MS5611.cpp
 //  AUTHOR: Rob Tillaart
 //          Erni - testing/fixes
-// VERSION: 0.3.3
+//          Alfredo Colas(LyricPants66133)
+// VERSION: 0.4.0
 // PURPOSE: MS5611 Temperature & Humidity library for Arduino
 //     URL: https://github.com/RobTillaart/MS5611
 //
 //  HISTORY:
+//  0.4.0   2021-12-29  Add SPI Interface
 //  0.3.3   2021-12-25  Update oversampling timings to reduce time spent waiting
 //  0.3.2   2021-12-24  add get/set oversampling, read() (thanks to LyricPants66133)
 //  0.3.1   2021-12-21  update library.json, readme, license, minor edits
@@ -110,7 +112,7 @@ bool MS5611::begin(TwoWire * wire)
 
 
 #ifdef iSPI
-bool MS5611::begin(SPIClass * spi)
+bool MS5611::begin(SPIClass * SPI)
 {
   _SPI = SPI;
   _SPI->begin();
@@ -224,7 +226,7 @@ void MS5611::setOversampling(osr_t samplingRate)
 void MS5611::convert(const uint8_t addr, uint8_t bits) // Operational
 {
   //Values from page 2 datasheet
-  uint16_t del[5] = {500, 1100, 2100, 4100, 10000}; // do not stage
+  uint16_t del[5] = {500, 1100, 2100, 4100, 8220};
 
   bits = constrain(bits, 8, 12); //works //works
   uint8_t offset = (bits - 8) * 2;
