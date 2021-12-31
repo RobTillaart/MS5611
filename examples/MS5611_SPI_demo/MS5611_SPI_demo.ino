@@ -13,7 +13,7 @@
 // Second argument is optoinal. Do not include it unless you know what you are doing.
 // It defines SPI communiction settings. see https://www.arduino.cc/en/Reference/SPISettings for more info
 // irst argument must NOT exceed 2000000. Second aregument can only be MSBFIRST. Third argument can only be SPI_MODE0 and SPI_MODE3
-MS5611 MS5611(10, SPISettings(2000000, MSBFIRST, SPI_MODE0));
+MS5611_SPI MS5611(10, SPISettings(2000000, MSBFIRST, SPI_MODE0));
 // The rest of the library operates exactly the same as with I2C communication.
 
 
