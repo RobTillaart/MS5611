@@ -53,7 +53,7 @@
 //
 // PUBLIC - I2C
 //
-MS5611_I2C::MS5611_I2C(uint8_t deviceAddress)
+MS5611::MS5611(uint8_t deviceAddress)
 {
   _address      = deviceAddress;
   _samplingRate = OSR_ULTRA_LOW;
@@ -84,7 +84,7 @@ bool MS5611_I2C::begin(uint8_t dataPin, uint8_t clockPin, TwoWire * wire)
 #endif
 
 
-bool MS5611_I2C::begin(TwoWire * wire)
+bool MS5611::begin(TwoWire * wire)
 {
   if ((_address < 0x76) || (_address > 0x77)) return false;
   _wire = wire;
@@ -96,7 +96,7 @@ bool MS5611_I2C::begin(TwoWire * wire)
 }
 
 
-bool MS5611_I2C::isConnected() // Operational
+bool MS5611::isConnected() // Operational
 {
   _wire->beginTransmission(_address);
   _result = _wire->endTransmission();
@@ -231,7 +231,7 @@ void MS5611_base::setOversampling(osr_t samplingRate)
 //
 // PRIVATE - I2C
 //
-void MS5611_I2C::convert(const uint8_t addr, uint8_t bits)
+void MS5611::convert(const uint8_t addr, uint8_t bits)
 {
   //Values from page 2 datasheet
   uint16_t del[5] = {500, 1100, 2100, 4100, 8220};
@@ -243,7 +243,7 @@ void MS5611_I2C::convert(const uint8_t addr, uint8_t bits)
 }
 
 
-uint16_t MS5611_I2C::readProm(uint8_t reg)
+uint16_t MS5611::readProm(uint8_t reg)
 {
   // last EEPROM register is CRC - Page13 datasheet.
   uint8_t promCRCRegister = 7;
@@ -267,7 +267,7 @@ uint16_t MS5611_I2C::readProm(uint8_t reg)
 }
 
 
-uint32_t MS5611_I2C::readADC() // Operational
+uint32_t MS5611::readADC() // Operational
 {
   command(MS5611_CMD_READ_ADC);
   if (_result == 0)
@@ -287,7 +287,7 @@ uint32_t MS5611_I2C::readADC() // Operational
 
 
 // Consider adding seperate spi with a byte and delay argument
-int MS5611_I2C::command(const uint8_t command) //Operational
+int MS5611::command(const uint8_t command) //Operational
 {
   yield();
 

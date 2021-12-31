@@ -103,10 +103,10 @@ private:
 
 
 
-class MS5611_I2C : public MS5611_base
+class MS5611 : public MS5611_base
 {
 public:
-  explicit MS5611_I2C(uint8_t deviceAddress);
+  explicit MS5611(uint8_t deviceAddress);
   bool     begin(TwoWire *wire = &Wire);
   bool     isConnected();
 
