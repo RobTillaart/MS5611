@@ -30,14 +30,6 @@
 #define MS5611_CMD_CONVERT_D1     0x40
 #define MS5611_CMD_CONVERT_D2     0x50
 
-
-// enum MS5611_protocol
-// {
-//   MS5611_I2C,
-//   MS5611_SPI
-// };
-
-
 enum osr_t
 {
     OSR_ULTRA_HIGH = 12, // 8.22 millis

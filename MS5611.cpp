@@ -96,7 +96,7 @@ bool MS5611::begin(TwoWire * wire)
 }
 
 
-bool MS5611::isConnected() // Operational
+bool MS5611::isConnected()
 {
   _wire->beginTransmission(_address);
   _result = _wire->endTransmission();
@@ -131,7 +131,7 @@ bool MS5611_SPI::begin(SPIClass * SPI)
 }
 
 
-bool MS5611_SPI::isConnected() // Operational
+bool MS5611_SPI::isConnected()
 {
   return (command(0x00) == MS5611_READ_OK); // 0X00 asks for a byte
 }
@@ -141,7 +141,7 @@ bool MS5611_SPI::isConnected() // Operational
 //
 // PUBLIC - base
 //
-void MS5611_base::reset() // Operational
+void MS5611_base::reset()
 {
   command(MS5611_CMD_RESET);
   delayMicroseconds(2800);
@@ -165,7 +165,7 @@ void MS5611_base::reset() // Operational
 }
 
 
-int MS5611_base::read(uint8_t bits) // operational
+int MS5611_base::read(uint8_t bits)
 {
   // VARIABLES NAMES BASED ON DATASHEET
   // ALL MAGIC NUMBERS ARE FROM DATASHEET
@@ -267,7 +267,7 @@ uint16_t MS5611::readProm(uint8_t reg)
 }
 
 
-uint32_t MS5611::readADC() // Operational
+uint32_t MS5611::readADC()
 {
   command(MS5611_CMD_READ_ADC);
   if (_result == 0)
@@ -286,8 +286,7 @@ uint32_t MS5611::readADC() // Operational
 }
 
 
-// Consider adding seperate spi with a byte and delay argument
-int MS5611::command(const uint8_t command) //Operational
+int MS5611::command(const uint8_t command)
 {
   yield();
 
@@ -342,7 +341,7 @@ uint16_t MS5611_SPI::readProm(uint8_t reg)
 }
 
 
-uint32_t MS5611_SPI::readADC() // Operational
+uint32_t MS5611_SPI::readADC()
 {
   _SPI->beginTransaction(_spiSettings);           // start SPI
   digitalWrite(_address, LOW);                    // select device
@@ -359,7 +358,7 @@ uint32_t MS5611_SPI::readADC() // Operational
 }
 
 
-int MS5611_SPI::command(const uint8_t command) //Operational
+int MS5611_SPI::command(const uint8_t command)
 {
   yield();
 
