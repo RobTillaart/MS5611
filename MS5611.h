@@ -1,6 +1,6 @@
 #pragma once
 // Can be set to iI2C or iSPI
-#define iI2C
+// #define iI2C
 //
 //    FILE: MS5611.h
 //  AUTHOR: Rob Tillaart
@@ -12,14 +12,8 @@
 
 
 #include "Arduino.h"
-
-#ifdef iI2C
 #include "Wire.h"
-#endif
-
-#ifdef iSPI
 #include "SPI.h"
-#endif
 
 
 #define MS5611_LIB_VERSION                    (F("0.4.0"))
@@ -28,6 +22,20 @@
 #define MS5611_READ_OK                        0
 #define MS5611_ERROR_2                        2         // low level I2C error
 #define MS5611_NOT_READ                       -999
+
+// datasheet page 10
+#define MS5611_CMD_READ_ADC       0x00
+#define MS5611_CMD_READ_PROM      0xA0
+#define MS5611_CMD_RESET          0x1E
+#define MS5611_CMD_CONVERT_D1     0x40
+#define MS5611_CMD_CONVERT_D2     0x50
+
+
+// enum MS5611_protocol
+// {
+//   MS5611_I2C,
+//   MS5611_SPI
+// };
 
 
 enum osr_t
@@ -40,25 +48,14 @@ enum osr_t
 };
 
 
-class MS5611
+class MS5611_base
 {
 public:
 #if defined (ESP8266) || defined(ESP32)
   bool     begin(uint8_t sda, uint8_t scl, TwoWire *wire = &Wire);
 #endif
 
-//ensures that only one library needs to be included
-#ifdef iI2C
-  explicit MS5611(uint8_t deviceAddress);
-  bool     begin(TwoWire *wire = &Wire);
-#endif
-
-#ifdef iSPI
-  explicit MS5611(uint8_t deviceAddress, SPISettings uspiSettings = SPISettings(2000000, MSBFIRST, SPI_MODE0)); // sensor does up to 20 MHZ, must be MSBFIRST, sensor supports mode0 and mode3
-  bool     begin(SPIClass *SPI = &SPI);
-#endif
-
-  bool     isConnected();
+  explicit MS5611_base() {};
 
   // reset command + get constants
   void     reset();
@@ -86,13 +83,9 @@ public:
   // last time in millis() that the sensor has been read.
   uint32_t lastRead()              { return _lastRead; };
 
-
-private:
-  void     convert(const uint8_t addr, uint8_t bits);
-  uint32_t readADC();
-  uint16_t readProm(uint8_t reg);
-  int      command(const uint8_t command);
-
+protected:
+  // MS5611_protocol _protocol;
+  SPISettings _spiSettings;
   uint8_t  _address;
   uint8_t  _samplingRate;
   int32_t  _temperature;
@@ -101,14 +94,49 @@ private:
   float    C[7];
   uint32_t _lastRead;
 
-  #ifdef iI2C
+private:
+  virtual void     convert(const uint8_t addr, uint8_t bits);
+  virtual uint32_t readADC();
+  virtual uint16_t readProm(uint8_t reg);
+  virtual int      command(const uint8_t command);
+};
+
+
+
+class MS5611_I2C : public MS5611_base
+{
+public:
+  explicit MS5611_I2C(uint8_t deviceAddress);
+  bool     begin(TwoWire *wire = &Wire);
+  bool     isConnected();
+
+protected:
+  void     convert(const uint8_t addr, uint8_t bits);
+  uint32_t readADC();
+  uint16_t readProm(uint8_t reg);
+  int      command(const uint8_t command);
+
+private:
   TwoWire * _wire;
-  #endif
-  
-  #ifdef iSPI
+};
+
+
+class MS5611_SPI : public MS5611_base
+{
+public:
+  explicit MS5611_SPI(uint8_t deviceAddress, SPISettings uspiSettings = SPISettings(2000000, MSBFIRST, SPI_MODE0));
+  bool     begin(SPIClass *SPI = &SPI);
+  bool     isConnected();
+
+protected:
+  void     convert(const uint8_t addr, uint8_t bits);
+  uint32_t readADC();
+  uint16_t readProm(uint8_t reg);
+  int      command(const uint8_t command);
+
+private:
   SPIClass * _SPI;
-  SPISettings _spiSettings;
-  #endif
+
 };
 
 

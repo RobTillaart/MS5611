@@ -9,6 +9,7 @@
 //
 //  HISTORY:
 //  0.4.0   2021-12-29  Add SPI Interface
+//                      Split MS5611 class into 3 classes
 //  0.3.4   2021-12-29  fix #16 compilation for MBED
 //  0.3.3   2021-12-25  Update oversampling timings to reduce time spent waiting
 //  0.3.2   2021-12-24  add get/set oversampling, read() (thanks to LyricPants66133)
@@ -48,29 +49,13 @@
 #include "MS5611.h"
 
 
-// datasheet page 10
-#define MS5611_CMD_READ_ADC       0x00
-#define MS5611_CMD_READ_PROM      0xA0
-#define MS5611_CMD_RESET          0x1E
-#define MS5611_CMD_CONVERT_D1     0x40
-#define MS5611_CMD_CONVERT_D2     0x50
-
-
 /////////////////////////////////////////////////////
 //
-// PUBLIC
+// PUBLIC - I2C
 //
-#ifdef iI2C
-MS5611::MS5611(uint8_t deviceAddress)
+MS5611_I2C::MS5611_I2C(uint8_t deviceAddress)
 {
-#endif
-
-#ifdef iSPI
-MS5611::MS5611(uint8_t deviceAddress, SPISettings uspiSettings)
-{
-  _spiSettings  = uspiSettings; // only needs to be included if using SPI
-#endif
-  _address      = deviceAddress;  // if SPI is selected, this variable represents the CS pin
+  _address      = deviceAddress;
   _samplingRate = OSR_ULTRA_LOW;
   _temperature  = MS5611_NOT_READ;
   _pressure     = MS5611_NOT_READ;
@@ -80,7 +65,7 @@ MS5611::MS5611(uint8_t deviceAddress, SPISettings uspiSettings)
 
 
 #if defined (ESP8266) || defined(ESP32)
-bool MS5611::begin(uint8_t dataPin, uint8_t clockPin, TwoWire * wire)
+bool MS5611_I2C::begin(uint8_t dataPin, uint8_t clockPin, TwoWire * wire)
 {
   if ((_address < 0x76) || (_address > 0x77)) return false;
 
@@ -98,8 +83,8 @@ bool MS5611::begin(uint8_t dataPin, uint8_t clockPin, TwoWire * wire)
 }
 #endif
 
-#ifdef iI2C
-bool MS5611::begin(TwoWire * wire)
+
+bool MS5611_I2C::begin(TwoWire * wire)
 {
   if ((_address < 0x76) || (_address > 0x77)) return false;
   _wire = wire;
@@ -109,35 +94,54 @@ bool MS5611::begin(TwoWire * wire)
   reset();
   return true;
 }
-#endif
 
 
-#ifdef iSPI
-bool MS5611::begin(SPIClass * SPI)
+bool MS5611_I2C::isConnected() // Operational
+{
+  _wire->beginTransmission(_address);
+  _result = _wire->endTransmission();
+  return (_result == 0);
+}
+
+
+/////////////////////////////////////////////////////
+//
+// PUBLIC - SPI
+//
+MS5611_SPI::MS5611_SPI(uint8_t deviceAddress, SPISettings uspiSettings)
+{
+  _spiSettings  = uspiSettings;
+  _address      = deviceAddress;  // SPI selected, represents CS pin
+  _samplingRate = OSR_ULTRA_LOW;
+  _temperature  = MS5611_NOT_READ;
+  _pressure     = MS5611_NOT_READ;
+  _result       = MS5611_NOT_READ;
+  _lastRead     = 0;
+}
+
+
+bool MS5611_SPI::begin(SPIClass * SPI)
 {
   _SPI = SPI;
   _SPI->begin();
   if (! isConnected()) return false;
   
-  reset();
+  MS5611_base::reset();
   return true;
 }
-#endif
 
-bool MS5611::isConnected() // Operational
+
+bool MS5611_SPI::isConnected() // Operational
 {
-  #ifdef iI2C
-  _wire->beginTransmission(_address);
-  return (_wire->endTransmission() == 0);
-  #endif
-
-  #ifdef iSPI
-  return(command(0x00) == MS5611_READ_OK); // 0X00 asks for a byte
-  #endif
+  return (command(0x00) == MS5611_READ_OK); // 0X00 asks for a byte
 }
 
 
-void MS5611::reset() // Operational
+/////////////////////////////////////////////////////
+//
+// PUBLIC - base
+//
+void MS5611_base::reset() // Operational
 {
   command(MS5611_CMD_RESET);
   delayMicroseconds(2800);
@@ -160,7 +164,8 @@ void MS5611::reset() // Operational
   }
 }
 
-int MS5611::read(uint8_t bits) // operational
+
+int MS5611_base::read(uint8_t bits) // operational
 {
   // VARIABLES NAMES BASED ON DATASHEET
   // ALL MAGIC NUMBERS ARE FROM DATASHEET
@@ -216,39 +221,29 @@ int MS5611::read(uint8_t bits) // operational
 }
 
 
-void MS5611::setOversampling(osr_t samplingRate)
+void MS5611_base::setOversampling(osr_t samplingRate)
 {
   _samplingRate = (uint8_t) samplingRate;
 }
 
+
 /////////////////////////////////////////////////////
 //
-// PRIVATE
+// PRIVATE - I2C
 //
-void MS5611::convert(const uint8_t addr, uint8_t bits) // Operational
+void MS5611_I2C::convert(const uint8_t addr, uint8_t bits)
 {
   //Values from page 2 datasheet
   uint16_t del[5] = {500, 1100, 2100, 4100, 8220};
 
   bits = constrain(bits, 8, 12); //works //works
   uint8_t offset = (bits - 8) * 2;
-  #ifdef iI2C
   command(addr + offset);
   delayMicroseconds(del[offset/2]);
-  #endif
-
-  #ifdef iSPI
-  _SPI->beginTransaction(_spiSettings); // start SPI
-  digitalWrite(_address, LOW);          // select device
-  _SPI->transfer(addr + offset);        // send command
-  delayMicroseconds(del[offset/2]);
-  digitalWrite(_address, HIGH);         // de-select device
-  _SPI->endTransaction();               // end SPI
-  #endif
 }
 
 
-uint16_t MS5611::readProm(uint8_t reg) //SPI readings abnormal
+uint16_t MS5611_I2C::readProm(uint8_t reg)
 {
   // last EEPROM register is CRC - Page13 datasheet.
   uint8_t promCRCRegister = 7;
@@ -256,7 +251,6 @@ uint16_t MS5611::readProm(uint8_t reg) //SPI readings abnormal
 
   uint8_t offset = reg * 2;
 
-  #ifdef iI2C
   command(MS5611_CMD_READ_PROM + offset); //send read command
   if (_result == 0)
   {
@@ -269,28 +263,12 @@ uint16_t MS5611::readProm(uint8_t reg) //SPI readings abnormal
     }
     return 0;
   }
-  #endif
-  
-  #ifdef iSPI
-  _SPI->beginTransaction(_spiSettings);                    // start SPI
-  digitalWrite(_address, LOW);                             // select device
-  _SPI->transfer(MS5611_CMD_READ_PROM + offset); // send command
-
-  uint16_t val = _SPI->transfer(0x00) * 256;             // Get first byte
-  val += _SPI->transfer(0x00);                           // Get second byte
-
-  digitalWrite(_address, HIGH);                          // de-select device
-  _SPI->endTransaction();                                // end SPI
-  
-  return val;
-  #endif
   return 0;
 }
 
 
-uint32_t MS5611::readADC() // Operational
+uint32_t MS5611_I2C::readADC() // Operational
 {
-  #ifdef iI2C
   command(MS5611_CMD_READ_ADC);
   if (_result == 0)
   {
@@ -305,9 +283,67 @@ uint32_t MS5611::readADC() // Operational
     return 0UL;
   }
   return 0UL;
-  #endif
+}
 
-  #ifdef iSPI
+
+// Consider adding seperate spi with a byte and delay argument
+int MS5611_I2C::command(const uint8_t command) //Operational
+{
+  yield();
+
+  _wire->beginTransmission(_address);
+  _wire->write(command);
+  _result = _wire->endTransmission();
+
+  return _result;
+}
+
+
+/////////////////////////////////////////////////////
+//
+// PRIVATE - SPI
+//
+void MS5611_SPI::convert(const uint8_t addr, uint8_t bits)
+{
+  //Values from page 2 datasheet
+  uint16_t del[5] = {500, 1100, 2100, 4100, 8220};
+
+  bits = constrain(bits, 8, 12); //works //works
+  uint8_t offset = (bits - 8) * 2;
+
+  _SPI->beginTransaction(_spiSettings); // start SPI
+  digitalWrite(_address, LOW);          // select device
+  _SPI->transfer(addr + offset);        // send command
+  delayMicroseconds(del[offset/2]);
+  digitalWrite(_address, HIGH);         // de-select device
+  _SPI->endTransaction();               // end SPI
+}
+
+
+uint16_t MS5611_SPI::readProm(uint8_t reg)
+{
+  // last EEPROM register is CRC - Page13 datasheet.
+  uint8_t promCRCRegister = 7;
+  if (reg > promCRCRegister) return 0;
+
+  uint8_t offset = reg * 2;
+
+  _SPI->beginTransaction(_spiSettings);                    // start SPI
+  digitalWrite(_address, LOW);                             // select device
+  _SPI->transfer(MS5611_CMD_READ_PROM + offset); // send command
+
+  uint16_t val = _SPI->transfer(0x00) * 256;             // Get first byte
+  val += _SPI->transfer(0x00);                           // Get second byte
+
+  digitalWrite(_address, HIGH);                          // de-select device
+  _SPI->endTransaction();                                // end SPI
+  
+  return val;
+}
+
+
+uint32_t MS5611_SPI::readADC() // Operational
+{
   _SPI->beginTransaction(_spiSettings);           // start SPI
   digitalWrite(_address, LOW);                    // select device
   
@@ -320,29 +356,19 @@ uint32_t MS5611::readADC() // Operational
   digitalWrite(_address, HIGH);                  // de-select device
   _SPI->endTransaction();                        // end SPI
   return val;
-  #endif
 }
 
 
-// Consider adding seperate spi with a byte and delay argument
-int MS5611::command(const uint8_t command) //Operational
+int MS5611_SPI::command(const uint8_t command) //Operational
 {
   yield();
 
-  #ifdef iI2C
-  _wire->beginTransmission(_address);
-  _wire->write(command);
-  _result = _wire->endTransmission();
-  #endif
-  
-  #ifdef iSPI
   _SPI->beginTransaction(_spiSettings); // start SPI
   digitalWrite(_address, LOW);          // select device
   _SPI->transfer(command);              // send command
   _result = _SPI->transfer(0x00);       // receive first byte
   digitalWrite(_address, HIGH);         // de-select device
   _SPI->endTransaction();               // end SPI
-  #endif
 
   return _result;
 }
