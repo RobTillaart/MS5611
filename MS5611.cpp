@@ -2,12 +2,14 @@
 //    FILE: MS5611.cpp
 //  AUTHOR: Rob Tillaart
 //          Erni - testing/fixes
-// VERSION: 0.3.2
+// VERSION: 0.3.5
 // PURPOSE: MS5611 Temperature & Humidity library for Arduino
 //     URL: https://github.com/RobTillaart/MS5611
 //
 //  HISTORY:
-//
+//  0.3.5   2022-01-13  fix isConnected() for NANO 33 BLE
+//  0.3.4   2021-12-29  fix #16 compilation for MBED
+//  0.3.3   2021-12-25  Update oversampling timings to reduce time spent waiting
 //  0.3.2   2021-12-24  add get/set oversampling, read() (thanks to LyricPants66133)
 //  0.3.1   2021-12-21  update library.json, readme, license, minor edits
 //  0.3.0   2021-01-27  fix #9 math error (thanks to Emiel Steerneman)
@@ -17,7 +19,7 @@
 //
 //  0.2.2   2021-01-01  add Arduino-CI + unit tests + isConnected()
 //  0.2.1   2020-06-28  fix #1 min macro compile error
-//  0.2.0   2020-06-21  refactor; #pragma once; 
+//  0.2.0   2020-06-21  refactor; #pragma once;
 //
 //  0.1.8               fix #109 incorrect constants (thanks to flauth)
 //  0.1.7               revert double to float (issue 33)
@@ -103,6 +105,7 @@ bool MS5611::begin(TwoWire * wire)
 bool MS5611::isConnected()
 {
   _wire->beginTransmission(_address);
+  _wire->write(0);                        // needed for NANO 33 BLE
   return (_wire->endTransmission() == 0);
 }
 
@@ -110,16 +113,16 @@ bool MS5611::isConnected()
 void MS5611::reset()
 {
   command(MS5611_CMD_RESET);
-  delay(3);
+  delayMicroseconds(2800);
   // constants that were multiplied in read()
   // do this once and you save CPU cycles
   C[0] = 1;
-  C[1] = 32768L;
-  C[2] = 65536L;
-  C[3] = 3.90625E-3;
-  C[4] = 7.8125E-3;
-  C[5] = 256;
-  C[6] = 1.1920928955E-7;
+  C[1] = 32768L;          // SENSt1 = C[1] * 2^15
+  C[2] = 65536L;          // OFFt1 = C[2] * 2^16
+  C[3] = 3.90625E-3;      // TCS = C[3] / 2^6
+  C[4] = 7.8125E-3;       // TCO = C[4] / 2^7
+  C[5] = 256;             // Tref = C[5] * 2^8
+  C[6] = 1.1920928955E-7; // TEMPSENS = C[6] / 2^23
   // read factory calibrations from EEPROM.
   for (uint8_t reg = 0; reg < 7; reg++)
   {
@@ -138,20 +141,21 @@ int MS5611::read(uint8_t bits)
 
   convert(MS5611_CMD_CONVERT_D1, bits);
   if (_result) return _result;
-  uint32_t D1 = readADC();
+  // NOTE: D1 and D2 seem reserved in MBED (NANO BLE)
+  uint32_t _D1 = readADC();
   if (_result) return _result;
 
   convert(MS5611_CMD_CONVERT_D2, bits);
   if (_result) return _result;
-  uint32_t D2 = readADC();
+  uint32_t _D2 = readADC();
   if (_result) return _result;
-  
+
   //  TEST VALUES - comment lines above
   // uint32_t D1 = 9085466;
   // uint32_t D2 = 8569150;
 
   // TEMP & PRESS MATH - PAGE 7/20
-  float dT = D2 - C[5];
+  float dT = _D2 - C[5];
   _temperature = 2000 + dT * C[6];
 
   float offset =  C[2] + dT * C[4];
@@ -179,7 +183,7 @@ int MS5611::read(uint8_t bits)
   }
   // END SECOND ORDER COMPENSATION
 
-  _pressure = (D1 * sens * 4.76837158205E-7 - offset) * 3.051757813E-5;
+  _pressure = (_D1 * sens * 4.76837158205E-7 - offset) * 3.051757813E-5;
 
   _lastRead = millis();
   return MS5611_READ_OK;
@@ -197,12 +201,13 @@ void MS5611::setOversampling(osr_t samplingRate)
 //
 void MS5611::convert(const uint8_t addr, uint8_t bits)
 {
-  uint8_t del[5] = {1, 2, 3, 5, 10};
+  //Values from page 2 datasheet
+  uint16_t del[5] = {500, 1100, 2100, 4100, 8220};
 
   bits = constrain(bits, 8, 12);
   uint8_t offset = (bits - 8) * 2;
   command(addr + offset);
-  delay(del[offset/2]);
+  delayMicroseconds(del[offset/2]);
 }
 
 
