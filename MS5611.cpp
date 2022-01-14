@@ -2,11 +2,12 @@
 //    FILE: MS5611.cpp
 //  AUTHOR: Rob Tillaart
 //          Erni - testing/fixes
-// VERSION: 0.3.5
+// VERSION: 0.3.6
 // PURPOSE: MS5611 Temperature & Humidity library for Arduino
 //     URL: https://github.com/RobTillaart/MS5611
 //
 //  HISTORY:
+//  0.3.6   2022-01-15  add setOffset functions; minor refactor;
 //  0.3.5   2022-01-13  fix isConnected() for NANO 33 BLE
 //  0.3.4   2021-12-29  fix #16 compilation for MBED
 //  0.3.3   2021-12-25  Update oversampling timings to reduce time spent waiting
@@ -61,12 +62,14 @@
 //
 MS5611::MS5611(uint8_t deviceAddress)
 {
-  _address      = deviceAddress;
-  _samplingRate = OSR_ULTRA_LOW;
-  _temperature  = MS5611_NOT_READ;
-  _pressure     = MS5611_NOT_READ;
-  _result       = MS5611_NOT_READ;
-  _lastRead     = 0;
+  _address           = deviceAddress;
+  _samplingRate      = OSR_ULTRA_LOW;
+  _temperature       = MS5611_NOT_READ;
+  _pressure          = MS5611_NOT_READ;
+  _result            = MS5611_NOT_READ;
+  _lastRead          = 0;
+  _pressureOffset    = 0;
+  _temperatureOffset = 0;
 }
 
 
@@ -105,7 +108,10 @@ bool MS5611::begin(TwoWire * wire)
 bool MS5611::isConnected()
 {
   _wire->beginTransmission(_address);
-  _wire->write(0);                        // needed for NANO 33 BLE
+   #ifdef ARDUINO_ARCH_NRF52840
+   //  needed for NANO 33 BLE
+  _wire->write(0);
+   #endif
   return (_wire->endTransmission() == 0);
 }
 
@@ -113,7 +119,12 @@ bool MS5611::isConnected()
 void MS5611::reset()
 {
   command(MS5611_CMD_RESET);
-  delayMicroseconds(2800);
+  uint32_t start = micros();
+  while (micros() - start < 2800)  // prevent blocking RTOS
+  {
+    yield();
+    delayMicroseconds(10);
+  }
   // constants that were multiplied in read()
   // do this once and you save CPU cycles
   C[0] = 1;
@@ -195,6 +206,21 @@ void MS5611::setOversampling(osr_t samplingRate)
   _samplingRate = (uint8_t) samplingRate;
 }
 
+
+float MS5611::getTemperature() const  
+{
+  if (_temperatureOffset == 0) return _temperature * 0.01; 
+  return _temperature * 0.01 + _temperatureOffset; 
+};
+
+
+float MS5611::getPressure() const
+{
+  if (_pressureOffset == 0) return _pressure * 0.01;
+  return _pressure * 0.01 + _pressureOffset; 
+};
+
+
 /////////////////////////////////////////////////////
 //
 // PRIVATE
@@ -207,7 +233,14 @@ void MS5611::convert(const uint8_t addr, uint8_t bits)
   bits = constrain(bits, 8, 12);
   uint8_t offset = (bits - 8) * 2;
   command(addr + offset);
-  delayMicroseconds(del[offset/2]);
+
+  uint32_t start = micros();
+  uint16_t waitTime = del[offset/2];
+  while (micros() - start < waitTime)  // prevent blocking RTOS
+  {
+    yield();
+    delayMicroseconds(10);
+  }
 }
 
 

@@ -3,7 +3,7 @@
 //    FILE: MS5611.h
 //  AUTHOR: Rob Tillaart
 //          Erni - testing/fixes
-// VERSION: 0.3.5
+// VERSION: 0.3.6
 // PURPOSE: Arduino library for MS5611 temperature and pressure sensor
 //     URL: https://github.com/RobTillaart/MS5611
 
@@ -29,7 +29,8 @@
 //  CS to VCC  ==>  0x76
 //  CS to GND  ==>  0x77
 
-#define MS5611_LIB_VERSION                    (F("0.3.5"))
+
+#define MS5611_LIB_VERSION                    (F("0.3.6"))
 
 
 #define MS5611_READ_OK                        0
@@ -73,15 +74,21 @@ public:
   osr_t    getOversampling() const { return (osr_t) _samplingRate; };
 
   // temperature is in ²C
-  float    getTemperature() const  { return _temperature * 0.01; };
+  float    getTemperature() const;
 
   // pressure is in mBar
-  float    getPressure() const     { return _pressure * 0.01; };
+  float    getPressure() const;
+
+  //  OFFSET - 0.3.6
+  void     setPressureOffset(float offset = 0) { _pressureOffset = offset; };
+  float    getPressureOffset() { return _pressureOffset; };
+  void     setTemperatureOffset(float offset = 0) { _temperatureOffset = offset; };
+  float    getTemperatureOffset() { return _temperatureOffset; };
 
   // to check for failure
   int      getLastResult() const   { return _result; };
 
-  // last time in millis() that the sensor has been read.
+  // last time in millis() when the sensor has been read.
   uint32_t lastRead()              { return _lastRead; };
 
 
@@ -95,6 +102,8 @@ private:
   uint8_t  _samplingRate;
   int32_t  _temperature;
   int32_t  _pressure;
+  float    _pressureOffset;
+  float    _temperatureOffset;
   int      _result;
   float    C[7];
   uint32_t _lastRead;
