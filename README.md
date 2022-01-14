@@ -77,7 +77,21 @@ See table below and test example how to use.
 - **uint32_t lastRead()** last time when **read()** was called in milliseconds since startup.
 
 
-#### Oversampling table
+### Offset
+
+The offset functions are added to calibrate the sensor against e.g. local weather station. This calibration can only be done runtime.
+
+- **void setPressureOffset(float offset = 0)** Set an offset to calibrate the pressure. 
+Can also be used to get the pressure relative to e.g. 1 Atm. (set offset to -1013 HPa).
+Default the value is set to 0.
+- **float getPressureOffset()** returns the current pressure offset.
+- **void setTemperatureOffset(float offset = 0)** Set an offset to calibrate the temperature. 
+Can also be used to get the temperature in degrees Kelvin. (set offset to +273.15)
+Default the value is set to 0.
+- **float getTemperatureOffset()** returns the current temperature offset.
+
+
+### Oversampling table
 
 (numbers from datasheet, actual time differs - todo)
 
