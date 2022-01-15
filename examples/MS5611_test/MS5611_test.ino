@@ -37,6 +37,8 @@ void setup()
   Serial.begin(115200);
   while (!Serial);
 
+  pinMode(LED_BUILTIN, OUTPUT);
+
   Serial.println();
   Serial.println(__FILE__);
   Serial.print("MS5611_LIB_VERSION: ");
