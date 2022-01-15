@@ -98,15 +98,17 @@ See table below and test example how to use.
 - **osr_t getOversampling()** returns amount of oversampling.
 
 
-(numbers from datasheet, actual time differs - todo)
+Some numbers from datasheet, page 3 MAX column rounded up. (see #23)
+(actual read time differs - see performance sketch)
 
-| definition     | value | oversampling ratio | resolution (mbar) | time (ms) | notes |
-|:--------------:|:-----:|:------------------:|:----------------:|:---------:|:------:|
-| OSR_ULTRA_HIGH |  12   |        4096        |      0.012       |   8.22    |
-| OSR_HIGH       |  11   |        2048        |      0.018       |   4.1     |
-| OSR_STANDARD   |  10   |        1024        |      0.027       |   2.1     |
-| OSR_LOW        |  9    |        512         |      0.042       |   1.1     |
-| OSR_ULTRA_LOW  |  8    |        256         |      0.065       |   0.5     | Default = backwards compatible
+| definition     | value | oversampling ratio | resolution (mbar) | time (us) | notes  |
+|:--------------:|:-----:|:------------------:|:-----------------:|:---------:|:------:|
+| OSR_ULTRA_HIGH |  12   |        4096        |      0.012        |   9100    |
+| OSR_HIGH       |  11   |        2048        |      0.018        |   4600    |
+| OSR_STANDARD   |  10   |        1024        |      0.027        |   2300    |
+| OSR_LOW        |  9    |        512         |      0.042        |   1200    |
+| OSR_ULTRA_LOW  |  8    |        256         |      0.065        |    600    | Default = backwards compatible
+
 
 
 #### Offset 

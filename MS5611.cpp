@@ -8,6 +8,7 @@
 //
 //  HISTORY:
 //  0.3.6   2022-01-15  add setOffset functions; minor refactor;
+//                      adjust convert timing to max - see issue #23
 //  0.3.5   2022-01-13  fix isConnected() for NANO 33 BLE
 //  0.3.4   2021-12-29  fix #16 compilation for MBED
 //  0.3.3   2021-12-25  Update oversampling timings to reduce time spent waiting
@@ -228,8 +229,8 @@ float MS5611::getPressure() const
 //
 void MS5611::convert(const uint8_t addr, uint8_t bits)
 {
-  // values from page 2 datasheet
-  uint16_t del[5] = {500, 1100, 2100, 4100, 8220};
+  // values from page 3 datasheet - MAX column (rounded up)
+  uint16_t del[5] = {600, 1200, 2300, 4600, 9100};
 
   uint8_t index = bits;
   if (index < 8) index = 8;
