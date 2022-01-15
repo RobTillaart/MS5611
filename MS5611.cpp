@@ -209,17 +209,17 @@ void MS5611::setOversampling(osr_t samplingRate)
 }
 
 
-float MS5611::getTemperature() const  
+float MS5611::getTemperature() const
 {
-  if (_temperatureOffset == 0) return _temperature * 0.01; 
-  return _temperature * 0.01 + _temperatureOffset; 
+  if (_temperatureOffset == 0) return _temperature * 0.01;
+  return _temperature * 0.01 + _temperatureOffset;
 };
 
 
 float MS5611::getPressure() const
 {
   if (_pressureOffset == 0) return _pressure * 0.01;
-  return _pressure * 0.01 + _pressureOffset; 
+  return _pressure * 0.01 + _pressureOffset;
 };
 
 

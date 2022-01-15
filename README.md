@@ -68,7 +68,13 @@ After hours of testing it looks like that the I2C/Wire library of the NANO 33 BL
 does not handle **isConnected()** like other platforms do. 
 Adding a **wire->write(0x00)** in **isConnected()** fixes the problem, 
 however more investigation is needed to understand the root cause.
-In 0.3.6 this **write(0)** is made conditional explicit for the NANO 33 BLE.
+
+
+#### 0.3.6 
+
+The **write(0)** in **isConnected()** is made conditional explicit for the NANO 33 BLE.
+
+The timing for convert is adjusted from TYPICAL to MAX - datasheet page 3.
 
 
 ## Interface

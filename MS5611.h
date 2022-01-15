@@ -81,8 +81,8 @@ public:
   float    getPressure() const;
 
   //  OFFSET - 0.3.6
-  void     setPressureOffset(float offset = 0) { _pressureOffset = offset; };
-  float    getPressureOffset() { return _pressureOffset; };
+  void     setPressureOffset(float offset = 0)    { _pressureOffset = offset; };
+  float    getPressureOffset()    { return _pressureOffset; };
   void     setTemperatureOffset(float offset = 0) { _temperatureOffset = offset; };
   float    getTemperatureOffset() { return _temperatureOffset; };
 
@@ -90,7 +90,13 @@ public:
   int      getLastResult() const   { return _result; };
 
   // last time in millis() when the sensor has been read.
-  uint32_t lastRead()              { return _lastRead; };
+  uint32_t lastRead() const        { return _lastRead; };
+
+  // develop functions.
+  /*
+  void     setAddress(uint8_t address) { _address = address; };  // RANGE CHECK !!!
+  uint8_t  getAddress() const          { return _address; };
+  */
 
 
 private:
