@@ -120,7 +120,8 @@ void MS5611::reset()
 {
   command(MS5611_CMD_RESET);
   uint32_t start = micros();
-  while (micros() - start < 2800)  // prevent blocking RTOS
+  // while loop prevents blocking RTOS
+  while (micros() - start < 2800)
   {
     yield();
     delayMicroseconds(10);
@@ -227,16 +228,20 @@ float MS5611::getPressure() const
 //
 void MS5611::convert(const uint8_t addr, uint8_t bits)
 {
-  //Values from page 2 datasheet
+  // values from page 2 datasheet
   uint16_t del[5] = {500, 1100, 2100, 4100, 8220};
 
-  bits = constrain(bits, 8, 12);
-  uint8_t offset = (bits - 8) * 2;
+  uint8_t index = bits;
+  if (index < 8) index = 8;
+  else if (index > 12) index = 12;
+  index -= 8;
+  uint8_t offset = index * 2;
   command(addr + offset);
 
+  uint16_t waitTime = del[index];
   uint32_t start = micros();
-  uint16_t waitTime = del[offset/2];
-  while (micros() - start < waitTime)  // prevent blocking RTOS
+  // while loop prevents blocking RTOS
+  while (micros() - start < waitTime)
   {
     yield();
     delayMicroseconds(10);
@@ -246,7 +251,7 @@ void MS5611::convert(const uint8_t addr, uint8_t bits)
 
 uint16_t MS5611::readProm(uint8_t reg)
 {
-  // last EEPROM register is CRC - Page13 datasheet.
+  // last EEPROM register is CRC - Page 13 datasheet.
   uint8_t promCRCRegister = 7;
   if (reg > promCRCRegister) return 0;
 
@@ -254,12 +259,13 @@ uint16_t MS5611::readProm(uint8_t reg)
   command(MS5611_CMD_READ_PROM + offset);
   if (_result == 0)
   {
-    int nr = _wire->requestFrom(_address, (uint8_t)2);
-    if (nr >= 2)
+    uint8_t length = 2;
+    int bytes = _wire->requestFrom(_address, length);
+    if (bytes >= length)
     {
-      uint16_t val = _wire->read() * 256;
-      val += _wire->read();
-      return val;
+      uint16_t value = _wire->read() * 256;
+      value += _wire->read();
+      return value;
     }
     return 0;
   }
@@ -272,13 +278,14 @@ uint32_t MS5611::readADC()
   command(MS5611_CMD_READ_ADC);
   if (_result == 0)
   {
-    int nr = _wire->requestFrom(_address, (uint8_t)3);
-    if (nr >= 3)
+    uint8_t length = 3;
+    int bytes = _wire->requestFrom(_address, length);
+    if (bytes >= length)
     {
-      uint32_t val = _wire->read() * 65536UL;
-      val += _wire->read() * 256UL;
-      val += _wire->read();
-      return val;
+      uint32_t value = _wire->read() * 65536UL;
+      value += _wire->read() * 256UL;
+      value += _wire->read();
+      return value;
     }
     return 0UL;
   }

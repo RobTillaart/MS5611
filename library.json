@@ -1,6 +1,6 @@
 {
   "name": "MS5611",
-  "keywords": "MS5611,temperature,pressure",
+  "keywords": "MS5611,GY-63,GY63,temperature,pressure",
   "description": "Arduino library for MS5611 temperature and pressure sensor",
   "authors":
   [

@@ -21,7 +21,7 @@
 //  SDI    SDA  | o      |
 //  CSO         | o      |
 //  SDO         | o L    |   L = led
-//          PS  | o    O |   O = opening  PS
+//          PS  | o    O |   O = opening  PS = protocol select
 //              +--------+
 //
 //  PS to VCC  ==>  I2C
@@ -40,11 +40,11 @@
 
 enum osr_t
 {
-    OSR_ULTRA_HIGH = 12, // 10 millis
-    OSR_HIGH       = 11, //  5 millis
-    OSR_STANDARD   = 10, //  3 millis
-    OSR_LOW        = 9,  //  2 millis
-    OSR_ULTRA_LOW  = 8   //  1 millis    Default = backwards compatible
+    OSR_ULTRA_HIGH = 12,        // 10 millis
+    OSR_HIGH       = 11,        //  5 millis
+    OSR_STANDARD   = 10,        //  3 millis
+    OSR_LOW        = 9,         //  2 millis
+    OSR_ULTRA_LOW  = 8          //  1 millis    Default = backwards compatible
 };
 
 
@@ -65,7 +65,8 @@ public:
   // the actual reading of the sensor;
   // returns MS5611_READ_OK upon success
   int      read(uint8_t bits);
-  inline int read() { return read( (uint8_t) _samplingRate); };  // uses the preset oversampling
+  // wrapper, uses the preset oversampling rate.
+  inline int read() { return read( (uint8_t) _samplingRate); };
 
   // sets oversampling to a value between 8 and 12
   void     setOversampling(osr_t samplingRate);
