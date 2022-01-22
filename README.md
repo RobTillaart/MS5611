@@ -18,7 +18,10 @@ The high resolution is made possible by oversampling many times.
 
 The device address is 0x76 or 0x77 depending on the CSB/CSO pin.
 
-This library only implements the I2C interface. 
+This library only implements the I2C interface.
+
+An experimental SPI version of the library can be found here 
+- https://github.com/RobTillaart/MS5611_SPI
 
 
 #### breakout
@@ -38,7 +41,7 @@ This library only implements the I2C interface.
 //          PS  | o    O |   O = opening  PS = protocol select
 //              +--------+
 //
-//  PS to VCC  ==>  I2C
+//  PS to VCC  ==>  I2C  (GY-63 board has internal pull up, so not needed)
 //  PS to GND  ==>  SPI
 //  CS to VCC  ==>  0x76
 //  CS to GND  ==>  0x77
@@ -137,6 +140,9 @@ Default the offset is set to 0.
 
 - **int getLastResult()** checks last I2C communication. Replace with more informative error handling?
 - **uint32_t lastRead()** last time when **read()** was called in milliseconds since startup.
+- **uint32_t getPromHash()** returns the hashed values of the calibration PROM. 
+As these calibration are set in the factory and differ per sensor these can serve as a deviceID.
+Having a device-ID can help to set known offsets for each sensor automatically.
 
 
 ## Operation
@@ -148,9 +154,7 @@ See examples
 
 - update documentation
   - separate release notes?
-- create a SPI based library (same base class if possible?)
-  - first get this lib working 100%
 - proper error handling
 - redo lower level functions?
 - handle the read + math of temperature first? 
--
+- flag to enable / disable the compensation part?
