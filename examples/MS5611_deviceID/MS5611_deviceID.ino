@@ -1,5 +1,5 @@
 //
-//    FILE: MS5611_promHash.ino
+//    FILE: MS5611_deviceID.ino
 //  AUTHOR: Rob Tillaart
 // PURPOSE: demo application
 //    DATE: 2022-01-22
@@ -47,7 +47,7 @@ void setup()
   if (MS5611.begin() == true)
   {
     Serial.print("MS5611 found: ");
-    Serial.println(MS5611.getPromHash(), HEX);
+    Serial.println(MS5611.getDeviceID(), HEX);
   }
   else
   {
