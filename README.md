@@ -149,9 +149,16 @@ Default the offset is set to 0.
 
 - **int getLastResult()** checks last I2C communication. Replace with more informative error handling?
 - **uint32_t lastRead()** last time when **read()** was called in milliseconds since startup.
-- **uint32_t getPromHash()** returns the hashed values of the calibration PROM. 
-As these calibration are set in the factory and differ per sensor these can serve as a deviceID.
-Having a device-ID can help to set known offsets for each sensor automatically.
+- **uint32_t getDeviceID()** returns the hashed values of the calibration PROM. 
+As these calibration are set in the factory and differ (enough) per sensor these can serve as an unique deviceID.
+
+Having a device-ID can be used in many ways:
+- use known offsets for each sensor automatically, 
+- work as an identification of that specific copy of the project (customer specific tracking).
+- ID in a mesh network
+- etc.
+
+Note: this is not an official ID from the device / datasheet, it is made up.
 
 
 ## Operation

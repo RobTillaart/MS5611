@@ -95,7 +95,7 @@ public:
   // last time in millis() when the sensor has been read.
   uint32_t lastRead() const        { return _lastRead; };
 
-  uint32_t getPromHash() const     { return _promHash; };
+  uint32_t getDeviceID() const     { return _deviceID; };
 
   // develop functions.
   /*
@@ -120,7 +120,7 @@ private:
   int      _result;
   float    C[7];
   uint32_t _lastRead;
-  uint32_t _promHash;
+  uint32_t _deviceID;
 
   TwoWire * _wire;
 };

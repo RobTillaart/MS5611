@@ -71,7 +71,7 @@ MS5611::MS5611(uint8_t deviceAddress)
   _pressure          = MS5611_NOT_READ;
   _result            = MS5611_NOT_READ;
   _lastRead          = 0;
-  _promHash          = 0;
+  _deviceID          = 0;
   _pressureOffset    = 0;
   _temperatureOffset = 0;
 }
@@ -147,9 +147,9 @@ void MS5611::reset()
     // C[7] == CRC - skipped.
     uint16_t tmp = readProm(reg);
     C[reg] *= tmp;
-    // hash is a simple SHIFT XOR merge of PROM data
-    _promHash <<= 4;
-    _promHash ^= tmp;
+    // _deviceID is a simple SHIFT XOR merge of PROM data
+    _deviceID <<= 4;
+    _deviceID ^= tmp;
     // Serial.println(readProm(reg));
   }
 }
