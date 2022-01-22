@@ -80,11 +80,20 @@ The **write(0)** in **isConnected()** is made conditional explicit for the NANO 
 The timing for convert is adjusted from TYPICAL to MAX - datasheet page 3.
 
 
+#### 0.3.7
+
+- default address for constructor, can be set as define on command line.
+MS5611_DEFAULT_ADDRESS
+- added getPromHash(), to provide a sort of device ID (experimental) based 
+upon unique factory calibration values.
+
+
 ## Interface
 
 #### Base
 
-- **MS5611(uint8_t deviceAddress)** constructor.
+- **MS5611(uint8_t deviceAddress = MS5611_DEFAULT_ADDRESS)** constructor.
+Since 0.3.7 a default address 0x77 is added.
 - **bool begin(uint8_t sda, uint8_t scl, TwoWire \*wire = &Wire)** for ESP and alike, optionally set Wire interface. initializes internals, 
 - **bool begin(TwoWire \*wire = &Wire)** for UNO and alike, optionally set Wire interface. Initializes internals.
 - **bool isConnected()** checks availability of device address on the I2C bus.

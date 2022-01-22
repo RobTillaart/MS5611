@@ -28,6 +28,9 @@
 
 MS5611 MS5611(0x77);
 
+#ifndef LED_BUILTIN
+#define LED_BUILTIN    13
+#endif
 
 uint32_t start, stop;
 

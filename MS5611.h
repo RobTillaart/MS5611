@@ -32,6 +32,9 @@
 
 #define MS5611_LIB_VERSION                    (F("0.3.7"))
 
+#ifndef MS5611_DEFAULT_ADDRESS
+#define MS5611_DEFAULT_ADDRESS                0x77
+#endif
 
 #define MS5611_READ_OK                        0
 #define MS5611_ERROR_2                        2         // low level I2C error
@@ -51,7 +54,7 @@ enum osr_t
 class MS5611
 {
 public:
-  explicit MS5611(uint8_t deviceAddress);
+  explicit MS5611(uint8_t deviceAddress = MS5611_DEFAULT_ADDRESS);
 
 #if defined (ESP8266) || defined(ESP32)
   bool     begin(uint8_t sda, uint8_t scl, TwoWire *wire = &Wire);
