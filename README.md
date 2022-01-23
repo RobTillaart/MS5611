@@ -82,10 +82,10 @@ The timing for convert is adjusted from TYPICAL to MAX - datasheet page 3.
 
 #### 0.3.7
 
-- default address for constructor, can be set as define on command line.
+- default address for constructor, can be set as define on the command line.
 MS5611_DEFAULT_ADDRESS
-- added getPromHash(), to provide a sort of device ID (experimental) based 
-upon unique factory calibration values.
+- added getDeviceID(), to provide a sort of unique device ID (experimental) based 
+upon uniqueness of the factory calibration values.
 
 
 ## Interface
@@ -158,7 +158,7 @@ Having a device-ID can be used in many ways:
 - ID in a mesh network
 - etc.
 
-Note: this is not an official ID from the device / datasheet, it is made up.
+Note: this is not an official ID from the device / datasheet, it is made up from calibration data.
 
 
 ## Operation

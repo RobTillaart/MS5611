@@ -26,7 +26,7 @@
 //  CS to VCC  ==>  0x76
 //  CS to GND  ==>  0x77
 
-MS5611 MS5611(0x76);
+MS5611 MS5611(0x77);
 
 
 void setup()
