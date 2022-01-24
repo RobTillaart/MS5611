@@ -24,7 +24,7 @@ An experimental SPI version of the library can be found here
 - https://github.com/RobTillaart/MS5611_SPI
 
 
-#### breakout
+#### Breakout GY-63
 
 ```cpp
 //
@@ -48,7 +48,7 @@ An experimental SPI version of the library can be found here
 //
 ```
 
-#### related libraries
+#### Related libraries
 
 For pressure conversions see - https://github.com/RobTillaart/pressure
 
@@ -86,6 +86,12 @@ The timing for convert is adjusted from TYPICAL to MAX - datasheet page 3.
 MS5611_DEFAULT_ADDRESS
 - added getDeviceID(), to provide a sort of unique device ID (experimental) based 
 upon uniqueness of the factory calibration values.
+
+
+#### 0.3.8
+
+- reset() returns bool indicating succesful ROM read
+- get/setCompensation() to enable/disable compensation.
 
 
 ## Interface
@@ -149,6 +155,10 @@ Default the offset is set to 0.
 
 - **int getLastResult()** checks last I2C communication. Replace with more informative error handling?
 - **uint32_t lastRead()** last time when **read()** was called in milliseconds since startup.
+
+
+#### DeviceID
+
 - **uint32_t getDeviceID()** returns the hashed values of the calibration PROM. 
 As these calibration are set in the factory and differ (enough) per sensor these can serve as an unique deviceID.
 
@@ -159,6 +169,14 @@ Having a device-ID can be used in many ways:
 - etc.
 
 Note: this is not an official ID from the device / datasheet, it is made up from calibration data.
+
+
+#### 2nd order pressure compensation
+
+- **setCompensation(bool flag = true)** to enable/desiable the 2nd order compensation. 
+The default = true. 
+Disabling the compensation will be slightly faster but you loose precision.
+- **getCompensation()** returns flag set above.
 
 
 ## Operation
@@ -173,4 +191,4 @@ See examples
 - proper error handling
 - redo lower level functions?
 - handle the read + math of temperature first? 
-- flag to enable / disable the compensation part?
+
