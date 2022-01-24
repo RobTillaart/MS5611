@@ -98,7 +98,7 @@ public:
 
   uint32_t getDeviceID() const     { return _deviceID; };
 
-  void     setCompensation(bool flag = true; } { _compensation = flag; };
+  void     setCompensation(bool flag = true) { _compensation = flag; };
   bool     getCompensation() { return _compensation; };
 
   // develop functions.
