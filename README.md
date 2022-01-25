@@ -100,11 +100,16 @@ upon uniqueness of the factory calibration values.
 
 - **MS5611(uint8_t deviceAddress = MS5611_DEFAULT_ADDRESS)** constructor.
 Since 0.3.7 a default address 0x77 is added.
-- **bool begin(uint8_t sda, uint8_t scl, TwoWire \*wire = &Wire)** for ESP and alike, optionally set Wire interface. initializes internals, 
-- **bool begin(TwoWire \*wire = &Wire)** for UNO and alike, optionally set Wire interface. Initializes internals.
+- **bool begin(uint8_t sda, uint8_t scl, TwoWire \*wire = &Wire)** for ESP and alike, optionally set Wire interface. 
+Initializes internals by calling reset().
+Return false indicates either isConnected() error or reset() error.
+- **bool begin(TwoWire \*wire = &Wire)** for UNO and alike, optionally set Wire interface. 
+Initializes internals by calling reset().
+Return false indicates either isConnected() error or reset() error.
 - **bool isConnected()** checks availability of device address on the I2C bus.
 (see note above NANO 33 BLE).
-- **reset()** resets the chip and loads constants from its ROM.
+- **bool reset()** resets the chip and loads constants from its ROM.
+Returns false if ROM could not be read.
 - **int read(uint8_t bits)** the actual reading of the sensor. 
 Number of bits determines the oversampling factor. Returns MS5611_READ_OK upon success.
 - **int read()** wraps the **read()** above, uses the preset oversampling (see below). 
@@ -188,7 +193,7 @@ See examples
 
 - update documentation
   - separate release notes?
-- proper error handling
+- proper error handling.
 - redo lower level functions?
 - handle the read + math of temperature first? 
 
