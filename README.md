@@ -44,6 +44,9 @@ See also - https://github.com/RobTillaart/MS5611_SPI/issues/3
 
 Note: the self heating offset can be compensated with **setTemperatureOffset(offset)**
 which allows you to match the temperature with the ambient temperature again.
+As the self heating effect is not expected to be linear over the full range of the
+temperature sensor the offset might work only in a smaller range.
+To have a reliable ambient temperature it is advised to use an dedicated temperature sensor for this (e.g. DS18B20).
 
 
 #### Breakout GY-63
