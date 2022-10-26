@@ -13,7 +13,7 @@ Arduino library for MS5611 pressure (and temperature) sensor.
 
 ## Description
 
-The MS5611 is a high resolution pressure (and temperature) sensor a.k.a GY-63.
+The MS5611-01BA03 is a high resolution pressure (and temperature) sensor a.k.a GY-63.
 The high resolution is made possible by oversampling many times.
 
 The device address is 0x76 or 0x77 depending on the CSB/CSO pin.
@@ -22,6 +22,12 @@ This library only implements the I2C interface.
 
 An experimental SPI version of the library can be found here 
 - https://github.com/RobTillaart/MS5611_SPI
+
+
+#### Compatibility
+
+The library is might be compatible with MS56XX, MS57xx and MS58xx devices.
+(not tested)
 
 
 #### Self heating
@@ -115,7 +121,7 @@ upon uniqueness of the factory calibration values.
 
 #### 0.3.8
 
-- reset() returns bool indicating succesful ROM read
+- reset() returns bool indicating successful ROM read
 - get/setCompensation() to enable/disable compensation.
 
 
@@ -201,6 +207,12 @@ Having a device-ID can be used in many ways:
 Note: this is not an official ID from the device / datasheet, it is made up from calibration data.
 
 
+#### getManufacturer
+
+The meaning of this value is unclear.
+- **uint16_t getManufacturer()** returns manudfacturer private info.
+
+
 #### 2nd order pressure compensation
 
 - **setCompensation(bool flag = true)** to enable/desirable the 2nd order compensation. 
@@ -216,9 +228,16 @@ See examples
 
 ## Future
 
+#### must
 - update documentation
   - separate release notes?
+
+#### should
 - proper error handling.
+- move all code to .cpp
+
+#### could
 - redo lower level functions?
-- handle the read + math of temperature first? 
+- handle the read + math of temperature first?
+
 

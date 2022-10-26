@@ -3,7 +3,7 @@
 //    FILE: MS5611.h
 //  AUTHOR: Rob Tillaart
 //          Erni - testing/fixes
-// VERSION: 0.3.8
+// VERSION: 0.3.9
 // PURPOSE: Arduino library for MS5611 temperature and pressure sensor
 //     URL: https://github.com/RobTillaart/MS5611
 
@@ -30,7 +30,7 @@
 //  CS to GND  ==>  0x77
 
 
-#define MS5611_LIB_VERSION                    (F("0.3.8"))
+#define MS5611_LIB_VERSION                    (F("0.3.9"))
 
 #ifndef MS5611_DEFAULT_ADDRESS
 #define MS5611_DEFAULT_ADDRESS                0x77
@@ -109,7 +109,9 @@ public:
   uint8_t  detectAddress() { todo };  // works with only one on the bus?
   */
 
+  //       EXPERIMENTAL
   uint16_t getManufacturer();
+  uint16_t getSerialCode();
 
 
 private:

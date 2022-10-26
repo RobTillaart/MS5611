@@ -2,7 +2,7 @@
 //    FILE: MS5611.cpp
 //  AUTHOR: Rob Tillaart
 //          Erni - testing/fixes
-// VERSION: 0.3.8
+// VERSION: 0.3.9
 // PURPOSE: MS5611 Temperature & Humidity library for Arduino
 //     URL: https://github.com/RobTillaart/MS5611
 //
@@ -215,10 +215,16 @@ float MS5611::getPressure() const
   return _pressure * 0.01 + _pressureOffset;
 };
 
-
+//       EXPERIMENTAL
 uint16_t MS5611::getManufacturer()
 {
   return readProm(0);
+}
+
+//       EXPERIMENTAL
+uint16_t MS5611::getSerialCode()
+{
+  return readProm(7) >> 4;
 }
 
 

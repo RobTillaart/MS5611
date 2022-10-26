@@ -7,9 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## [0.3.9] - 2022-10-26
-- Add RP2040 support to build-CI.
-- Add CHANGELOG.md
-
+- add RP2040 support to build-CI
+- add CHANGELOG.md
+- add getManufacturer()
+- add getSerialCode()
 
 
 ## [0.3.8] - 2022-01-24
@@ -58,30 +59,30 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ----
 
-## [0.1.8]
+## [0.1.8] - 2018-07-01
 - fix #109 incorrect constants (thanks to flauth)
 
-## [0.1.7]
+## [0.1.7] = 2017-07-26
 - revert double to float (issue 33)
 
 ## [0.1.6] - 2015-07-12
 - refactor
 
-## [0.1.05]
+## [0.1.05] - 2015-03-07
 - moved 6 float multiplies to init() ==> adds ~70 bytes !!!
 - moved the MS5611_LIB_VERSION to PROGMEM
 
-## [0.1.04]
+## [0.1.04] - 2014-10-19
 - changed float to double (for platforms which support it)
 - changed divisions in multiplications
 - fixed uint32_t readADC()
 - reduced size of C array by 1 float
 - added second order temperature compensation
 
-## [0.1.03]
+## [0.1.03] - 2014-10-17
 - changed math to float (test version)
 
-## [0.1.02]
+## [0.1.02] - 2014-10-17
 - fixed bug return value read()
 - fixed bug #bits D2
 - added MS5611_READ_OK
@@ -90,11 +91,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - merged convert functions
 - fixed offset in readProm()
 
-## [0.1.01]
+## [0.1.01] - 2014-10-16
 - small refactoring
 
 ## [0.1.00]
 - added temperature and Pressure code
 
-## [0.0.00] - 2014-10-*15
+## [0.0.00] - 2014-10-15
 - initial version
