@@ -113,12 +113,17 @@ public:
   uint16_t getManufacturer();
   uint16_t getSerialCode();
 
+  //       only use 
+  //       0 = default, 1 = factor 2 fix.
+  void     setMathMode(uint8_t mathMode);
+  uint8_t  getMathMode();
 
-private:
+protected:
   void     convert(const uint8_t addr, uint8_t bits);
   uint32_t readADC();
   uint16_t readProm(uint8_t reg);
   int      command(const uint8_t command);
+  void     initConstants();
 
   uint8_t  _address;
   uint8_t  _samplingRate;
@@ -131,6 +136,7 @@ private:
   uint32_t _lastRead;
   uint32_t _deviceID;
   bool     _compensation;
+  uint8_t  _mathMode = 0;
 
   TwoWire * _wire;
 };

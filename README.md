@@ -86,13 +86,13 @@ For pressure conversions see - https://github.com/RobTillaart/pressure
 For temperature conversions see - https://github.com/RobTillaart/Temperature
 
 
-## Release Notes
+## Release Notes (major)
 
 #### 0.3.0 breaking change
 
-1. fixed math error so previous versions are **obsolete**.
-2. temperature is a float expressed in degrees Celsius.
-3. pressure is a float expressed in mBar.
+- fixed math error so previous versions are **obsolete**.
+- temperature is a float expressed in degrees Celsius.
+- pressure is a float expressed in mBar.
 
 
 #### 0.3.5 NANO 33 BLE
@@ -104,25 +104,17 @@ Adding a **wire->write(0x00)** in **isConnected()** fixes the problem,
 however more investigation is needed to understand the root cause.
 
 
-#### 0.3.6 
+#### 0.3.9 pressure math 
 
-The **write(0)** in **isConnected()** is made conditional explicit for the NANO 33 BLE.
+There are MS5611 compatibles for which the math for the pressure is different.
+See **AN520__004: C-code example for MS56xx, MS57xx (except analog sensor), and MS58xx series pressure sensors**
+The difference is in the constants (powers of 2) used to calculate the pressure.
 
-The timing for convert is adjusted from TYPICAL to MAX - datasheet page 3.
+The library now supports a **setMathMode(uint8_t)** function to switch between:
+- type 0 ==> datasheet type math  (default)
+- type 1 ==> Application notes type math.
 
-
-#### 0.3.7
-
-- default address for constructor, can be set as define on the command line.
-MS5611_DEFAULT_ADDRESS
-- added getDeviceID(), to provide a sort of unique device ID (experimental) based 
-upon uniqueness of the factory calibration values.
-
-
-#### 0.3.8
-
-- reset() returns bool indicating successful ROM read
-- get/setCompensation() to enable/disable compensation.
+This solution might change in the future, think derived class.
 
 
 ## Interface
@@ -209,8 +201,29 @@ Note: this is not an official ID from the device / datasheet, it is made up from
 
 #### getManufacturer
 
-The meaning of this value is unclear.
-- **uint16_t getManufacturer()** returns manudfacturer private info.
+The meaning of the manufacturer and serialCode value is unclear.
+- **uint16_t getManufacturer()** returns manufacturer private info.
+- **uint16_t getSerialCode()** returns serialCode from the PROM\[6].
+
+
+#### math mode
+
+There are MS5611 "compatibles" for which the math for the pressure is different.
+See **AN520__004: C-code example for MS56xx, MS57xx (except analog sensor), and MS58xx series pressure sensors**
+The difference is in the constants (powers of 2) used to calculate the pressure.
+
+Since 0.3.9 the library supports:
+- **void setMathMode(uint8_t mode)** set math mode 0 or 1.
+- **uint8_t getMathMode()** returns mode set.
+
+|  mode  |  meaning                         |
+|:------:|:---------------------------------|
+|   0    |  datasheet type math  (default)  |
+|   1    |  Application notes type math     |
+
+After changing the mode one needs to call **reset()**
+
+This solution might change in the future, thinking of a  derived class.
 
 
 #### 2nd order pressure compensation
@@ -230,11 +243,11 @@ See examples
 
 #### must
 - update documentation
-  - separate release notes?
 
 #### should
 - proper error handling.
 - move all code to .cpp
+- derived class for factor 2 problem.
 
 #### could
 - redo lower level functions?
