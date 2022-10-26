@@ -37,7 +37,7 @@
 #endif
 
 #define MS5611_READ_OK                        0
-#define MS5611_ERROR_2                        2         // low level I2C error
+#define MS5611_ERROR_2                        2         //  low level I2C error
 #define MS5611_NOT_READ                       -999
 
 
@@ -62,26 +62,26 @@ public:
   bool     begin(TwoWire *wire = &Wire);
   bool     isConnected();
 
-  // reset command + get constants
-  // returns false if ROM constants == 0;
+  //  reset command + get constants
+  //  returns false if ROM constants == 0;
   bool     reset();
 
-  // the actual reading of the sensor;
-  // returns MS5611_READ_OK upon success
+  //  the actual reading of the sensor;
+  //  returns MS5611_READ_OK upon success
   int      read(uint8_t bits);
-  // wrapper, uses the preset oversampling rate.
+  //  wrapper, uses the preset oversampling rate.
   inline int read() { return read( (uint8_t) _samplingRate); };
 
-  // sets oversampling to a value between 8 and 12
+  //  sets oversampling to a value between 8 and 12
   void     setOversampling(osr_t samplingRate);
 
-  // oversampling rate is in osr_t
+  //  oversampling rate is in osr_t
   osr_t    getOversampling() const { return (osr_t) _samplingRate; };
 
-  // temperature is in ²C
+  //  temperature is in ²C
   float    getTemperature() const;
 
-  // pressure is in mBar
+  //  pressure is in mBar
   float    getPressure() const;
 
   //  OFFSET - 0.3.6
@@ -90,10 +90,10 @@ public:
   void     setTemperatureOffset(float offset = 0) { _temperatureOffset = offset; };
   float    getTemperatureOffset() { return _temperatureOffset; };
 
-  // to check for failure
+  //  to check for failure
   int      getLastResult() const   { return _result; };
 
-  // last time in millis() when the sensor has been read.
+  //  last time in millis() when the sensor has been read.
   uint32_t lastRead() const        { return _lastRead; };
 
   uint32_t getDeviceID() const     { return _deviceID; };
@@ -101,7 +101,7 @@ public:
   void     setCompensation(bool flag = true) { _compensation = flag; };
   bool     getCompensation() { return _compensation; };
 
-  // develop functions.
+  //  develop functions.
   /*
   void     setAddress(uint8_t address) { _address = address; };  // RANGE CHECK + isConnected() !
   uint8_t  getAddress() const          { return _address; };
