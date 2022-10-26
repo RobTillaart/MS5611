@@ -96,6 +96,7 @@ public:
   //  last time in millis() when the sensor has been read.
   uint32_t lastRead() const        { return _lastRead; };
 
+  //       _deviceID is a SHIFT XOR merge of 7 PROM registers, reasonable unique
   uint32_t getDeviceID() const     { return _deviceID; };
 
   void     setCompensation(bool flag = true) { _compensation = flag; };
@@ -107,6 +108,8 @@ public:
   uint8_t  getAddress() const          { return _address; };
   uint8_t  detectAddress() { todo };  // works with only one on the bus?
   */
+
+  uint16_t getManufacturer();
 
 
 private:

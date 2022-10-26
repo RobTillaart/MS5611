@@ -93,13 +93,24 @@ bool MS5611::reset()
   }
   //  constants that were multiplied in read() - datasheet page 8
   //  do this once and you save CPU cycles
+  //
+  //                                      datasheet     |    appNote
   C[0] = 1;
-  C[1] = 32768L;          //  SENSt1   = C[1] * 2^15
-  C[2] = 65536L;          //  OFFt1    = C[2] * 2^16
-  C[3] = 3.90625E-3;      //  TCS      = C[3] / 2^8
-  C[4] = 7.8125E-3;       //  TCO      = C[4] / 2^7
-  C[5] = 256;             //  Tref     = C[5] * 2^8
-  C[6] = 1.1920928955E-7; //  TEMPSENS = C[6] / 2^23
+  C[1] = 65536L;          //  SENSt1   = C[1] * 2^15    |    * 2^16
+  C[2] = 131072L;         //  OFFt1    = C[2] * 2^16    |    * 2^17
+  C[3] = 7.8125E-3;       //  TCS      = C[3] / 2^8     |    / 2^7
+  C[4] = 1.5625e-2;       //  TCO      = C[4] / 2^7     |    / 2^6
+  C[5] = 256;             //  Tref     = C[5] * 2^8     |    * 2^8
+  C[6] = 1.1920928955E-7; //  TEMPSENS = C[6] / 2^23    |    / 2^23
+
+  //  orginal
+  //  C[0] = 1;
+  //  C[1] = 32768L;          //  SENSt1   = C[1] * 2^15
+  //  C[2] = 65536L;          //  OFFt1    = C[2] * 2^16
+  //  C[3] = 3.90625E-3;      //  TCS      = C[3] / 2^8
+  //  C[4] = 7.8125E-3;       //  TCO      = C[4] / 2^7
+  //  C[5] = 256;             //  Tref     = C[5] * 2^8
+  //  C[6] = 1.1920928955E-7; //  TEMPSENS = C[6] / 2^23
 
   //  read factory calibrations from EEPROM.
   bool ROM_OK = true;
@@ -110,7 +121,7 @@ bool MS5611::reset()
     //  C[7] == CRC - skipped.
     uint16_t tmp = readProm(reg);
     C[reg] *= tmp;
-    //  _deviceID is a simple SHIFT XOR merge of PROM data
+    //  _deviceID is a SHIFT XOR merge of 7 PROM registers, reasonable unique
     _deviceID <<= 4;
     _deviceID ^= tmp;
     //  Serial.println(readProm(reg));
@@ -203,6 +214,12 @@ float MS5611::getPressure() const
   if (_pressureOffset == 0) return _pressure * 0.01;
   return _pressure * 0.01 + _pressureOffset;
 };
+
+
+uint16_t MS5611::getManufacturer()
+{
+  return readProm(0);
+}
 
 
 /////////////////////////////////////////////////////
