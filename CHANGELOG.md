@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - add CHANGELOG.md
 - add getManufacturer()
 - add getSerialCode()
-- add get- and setMathMode() to switch between pressure math.
+- add parameter mathMode to **reset()** to switch between pressure math.
   - see readme for details.
 
 ## [0.3.8] - 2022-01-24

@@ -80,7 +80,7 @@ bool MS5611::isConnected()
 }
 
 
-bool MS5611::reset()
+bool MS5611::reset(uint8_t mathMode)
 {
   command(MS5611_CMD_RESET);
   uint32_t start = micros();
@@ -92,8 +92,8 @@ bool MS5611::reset()
     delayMicroseconds(10);
   }
 
-  //  init the C[] array
-  initConstants();
+  //  initialize the C[] array
+  initConstants(mathMode);
 
   //  read factory calibrations from EEPROM.
   bool ROM_OK = true;
@@ -211,19 +211,6 @@ uint16_t MS5611::getSerialCode()
 }
 
 
-//       0 = default, 1 = factor 2 fix.
-void MS5611::setMathMode(uint8_t mathMode)
-{
-  _mathMode = mathMode;
-}
-
-
-uint8_t MS5611::getMathMode()
-{
-  return _mathMode;
-}
-
-
 /////////////////////////////////////////////////////
 //
 //  PRIVATE
@@ -305,13 +292,13 @@ int MS5611::command(const uint8_t command)
 }
 
 
-void MS5611::initConstants()
+void MS5611::initConstants(uint8_t mathMode)
 {
   //  constants that were multiplied in read() - datasheet page 8
   //  do this once and you save CPU cycles
   //
   //                               datasheet ms5611     |    appNote
-  //                               _type = 0;           |    type = 1
+  //                                mode = 0;           |    mode = 1
   C[0] = 1;
   C[1] = 32768L;          //  SENSt1   = C[1] * 2^15    |    * 2^16
   C[2] = 65536L;          //  OFFt1    = C[2] * 2^16    |    * 2^17
@@ -320,14 +307,14 @@ void MS5611::initConstants()
   C[5] = 256;             //  Tref     = C[5] * 2^8     |    * 2^8
   C[6] = 1.1920928955E-7; //  TEMPSENS = C[6] / 2^23    |    / 2^23
 
-  if (_mathMode == 1)
+  if (mathMode == 1)  //  Appnote version for pressure.
   {
     C[1] = 65536L;          //  SENSt1
-    C[2] = 131072L;         //  OFFt1 
-    C[3] = 7.8125E-3;       //  TCS   
-    C[4] = 1.5625e-2;       //  TCO   
+    C[2] = 131072L;         //  OFFt1
+    C[3] = 7.8125E-3;       //  TCS
+    C[4] = 1.5625e-2;       //  TCO
   }
 }
-  
+
 // -- END OF FILE --
 

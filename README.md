@@ -26,8 +26,9 @@ An experimental SPI version of the library can be found here
 
 #### Compatibility
 
-The library is might be compatible with MS56XX, MS57xx and MS58xx devices.
-(not tested)
+The library should be compatible with MS56XX, MS57xx and MS58xx devices (to be tested). 
+Some device types will returns only 50% of the pressure value. 
+This is solved in 0.3.9 by calling **reset(1)** to select the math used.
 
 
 #### Self heating
@@ -110,11 +111,12 @@ There are MS5611 compatibles for which the math for the pressure is different.
 See **AN520__004: C-code example for MS56xx, MS57xx (except analog sensor), and MS58xx series pressure sensors**
 The difference is in the constants (powers of 2) used to calculate the pressure.
 
-The library now supports a **setMathMode(uint8_t)** function to switch between:
-- type 0 ==> datasheet type math  (default)
-- type 1 ==> Application notes type math.
+The library implements **reset(uint8_t mathMode = 0)** to select the mathMode.
+- mathMode = 0 ==> datasheet type math  (default)
+- mathMode = 1 ==> Application notes type math.
+- other values will act as 0
 
-This solution might change in the future, think derived class.
+See issue #33.
 
 
 ## Interface
@@ -131,8 +133,10 @@ Initializes internals by calling reset().
 Return false indicates either isConnected() error or reset() error.
 - **bool isConnected()** checks availability of device address on the I2C bus.
 (see note above NANO 33 BLE).
-- **bool reset()** resets the chip and loads constants from its ROM.
+- **bool reset(uint8_t mathMode = 0)** resets the chip and loads constants from its ROM.
 Returns false if ROM could not be read.
+  - mathMode = 0 follows the datasheet math (default).
+  - mathMode = 1 will adjust for a factor 2 in the pressure math.
 - **int read(uint8_t bits)** the actual reading of the sensor. 
 Number of bits determines the oversampling factor. Returns MS5611_READ_OK upon success.
 - **int read()** wraps the **read()** above, uses the preset oversampling (see below). 
@@ -206,26 +210,6 @@ The meaning of the manufacturer and serialCode value is unclear.
 - **uint16_t getSerialCode()** returns serialCode from the PROM\[6].
 
 
-#### math mode
-
-There are MS5611 "compatibles" for which the math for the pressure is different.
-See **AN520__004: C-code example for MS56xx, MS57xx (except analog sensor), and MS58xx series pressure sensors**
-The difference is in the constants (powers of 2) used to calculate the pressure.
-
-Since 0.3.9 the library supports:
-- **void setMathMode(uint8_t mode)** set math mode 0 or 1.
-- **uint8_t getMathMode()** returns mode set.
-
-|  mode  |  meaning                         |
-|:------:|:---------------------------------|
-|   0    |  datasheet type math  (default)  |
-|   1    |  Application notes type math     |
-
-After changing the mode one needs to call **reset()**
-
-This solution might change in the future, thinking of a  derived class.
-
-
 #### 2nd order pressure compensation
 
 - **setCompensation(bool flag = true)** to enable/desirable the 2nd order compensation. 
@@ -247,7 +231,6 @@ See examples
 #### should
 - proper error handling.
 - move all code to .cpp
-- derived class for factor 2 problem.
 
 #### could
 - redo lower level functions?
