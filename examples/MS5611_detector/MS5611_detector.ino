@@ -6,8 +6,8 @@
 //     URL: https://github.com/RobTillaart/MS5611
 
 
-#include "Arduino.h"
-#include "Wire.h"
+#include "MS5611.h"
+
 
 //  BREAKOUT  MS5611  aka  GY63 - see datasheet
 //
