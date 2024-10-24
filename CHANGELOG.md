@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - add **float getPressurePascal()** Pascal == SI-unit
 - add **uint8_t getAddress()** convenience function.
 - add **uint16_t getCRC()** experimental
+- update examples
 - update readme.md
 - minor edits
 
