@@ -50,7 +50,8 @@ void setup()
   Wire.begin();
   if (ONE.begin() == true)
   {
-    Serial.println("MS5611 0x76 found.");
+    Serial.print("MS5611 found: ");
+    Serial.println(MS5611.getAddress());
   }
   else
   {
