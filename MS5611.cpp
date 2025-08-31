@@ -43,7 +43,7 @@ bool MS5611::begin()
   if ((_address < 0x76) || (_address > 0x77)) return false;
   if (! isConnected()) return false;
 
-  return reset();
+  return reset(0);  //  MS5611 has mathMode 0, see datasheet + initConstants.
 }
 
 
@@ -223,7 +223,7 @@ uint16_t MS5611::getCRC()
 
 /////////////////////////////////////////////////////
 //
-//  PRIVATE
+//  PROTECTED
 //
 void MS5611::convert(const uint8_t addr, uint8_t bits)
 {
@@ -326,6 +326,24 @@ void MS5611::initConstants(uint8_t mathMode)
   }
 }
 
+
+///////////////////////////////////////////////////////////////////
+//
+//  DERIVED CLASSES
+//
+MS5607::MS5607(uint8_t deviceAddress, TwoWire *wire)
+      : MS5611(deviceAddress, wire)
+{
+};
+
+
+bool MS5607::begin()
+{
+  if ((_address < 0x76) || (_address > 0x77)) return false;
+  if (! isConnected()) return false;
+
+  return reset(1);  //  MS5607 has mathMode 1, see datasheet + initConstants.
+};
 
 //  -- END OF FILE --
 

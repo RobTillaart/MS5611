@@ -138,12 +138,26 @@ protected:
   float    _pressureOffset;
   float    _temperatureOffset;
   int      _result;
-  float    C[7];
+  float    C[7];   //  constants, name from datasheet
   uint32_t _lastRead;
   uint32_t _deviceID;
   bool     _compensation;
 
   TwoWire * _wire;
+};
+
+
+
+///////////////////////////////////////////////////////////////////
+//
+//  DERIVED CLASSES
+//
+class MS5607 : public MS5611
+{
+public:
+  MS5607(uint8_t deviceAddress, TwoWire *wire = &Wire);
+
+  bool begin();  //  to set MathMode correctly
 };
 
 

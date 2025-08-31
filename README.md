@@ -21,12 +21,11 @@ The high resolution is made possible by oversampling many times.
 
 The device address is 0x76 or 0x77 depending on the CSB/CSO pin.
 
-This library only implements the I2C interface.
-
+This library only implements the I2C interface. 
 An experimental SPI version of the library can be found here 
 - https://github.com/RobTillaart/MS5611_SPI
 
-A derived library for STM32 can be found here
+A derived I2C library for the STM32 can be found here
 - https://github.com/Zakrzewiaczek/ms5611-stm32
 
 
@@ -159,7 +158,7 @@ User has to call **Wire.begin()** (or equivalent) and optional set the I2C pins
 before calling **ms5611.begin()** to initialize the library.
 
 
-## Interface
+## Interface MS5611
 
 ```cpp
 #include "MS5611.h"
@@ -285,6 +284,18 @@ The default = true.
 Disabling the compensation will be slightly faster but you loose precision.
 - **getCompensation()** returns flag set above.
 
+----
+
+## Interface MS5607
+
+Interface is very identical to the MS5611.
+
+- **MS5607(uint8_t deviceAddress, TwoWire \*wire = &Wire)** constructor.
+Address = 0x76 or 0x77, it has no default. Optionally one can set the Wire interface.
+- **bool begin()**
+Initializes internals by calling reset() to set correct mathMode.
+Return false indicates either isConnected() error or reset() error.  
+
 
 ## Future
 
@@ -298,6 +309,9 @@ Disabling the compensation will be slightly faster but you loose precision.
 
 #### Could
 
+- define derived classes per device type
+  - MS56XX, MS57xx and MS58xx?
+  - add correct math
 - redo lower level functions?
 - handle the read + math of temperature first?
 - find meaning PROM values, esp. 0 and 7

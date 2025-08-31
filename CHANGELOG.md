@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.4.2] - 2025-08-31
 - fix #42, add reference to STM32 version of library
 - add **float getAltitude(float airPressure = 1013.25)**
+- add derived MS5607 class
 - update readme.md
 - update GitHub actions
 - minor edits
