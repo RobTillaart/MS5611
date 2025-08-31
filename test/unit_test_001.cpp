@@ -66,7 +66,7 @@ unittest(test_constants)
   assertEqual(MS5611_ERROR_2 , 2);
   assertEqual(MS5611_NOT_READ, -999);
 
-  assertEqual(MS5611_DEFAULT_ADDRESS, 0x77)
+  assertEqual(MS5611_DEFAULT_ADDRESS, 0x77);
 }
 
 
