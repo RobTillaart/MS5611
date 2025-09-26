@@ -2,7 +2,7 @@
 //    FILE: MS5611.cpp
 //  AUTHOR: Rob Tillaart
 //          Erni - testing/fixes
-// VERSION: 0.4.2
+// VERSION: 0.5.0
 // PURPOSE: Arduino library for MS5611 temperature and pressure sensor
 //     URL: https://github.com/RobTillaart/MS5611
 
@@ -192,8 +192,16 @@ float MS5611::getPressurePascal() const
 //  https://en.wikipedia.org/wiki/Pressure_altitude
 float MS5611::getAltitude(float airPressure)
 {
-  float ratio = _pressure / airPressure;
+  //  _pressure is in Pascal (#44) and airPressure in mBar.
+  float ratio = _pressure * 0.01 / airPressure;
   return 44307.694 * (1 - pow(ratio, 0.190284));
+}
+
+
+float MS5611::getAltitudeFeet(float airPressure)
+{
+  float ratio = _pressure * 0.01 / airPressure;
+  return 145366.45 * (1 - pow(ratio, 0.190284));
 }
 
 
@@ -202,6 +210,7 @@ uint16_t MS5611::getManufacturer()
 {
   return readProm(0);
 }
+
 
 //       EXPERIMENTAL
 uint16_t MS5611::getSerialCode()
@@ -215,6 +224,7 @@ uint16_t MS5611::getProm(uint8_t index)
   return readProm(index);
 }
 
+
 uint16_t MS5611::getCRC()
 {
   return readProm(7) & 0x0F;
@@ -227,15 +237,15 @@ uint16_t MS5611::getCRC()
 //
 void MS5611::convert(const uint8_t addr, uint8_t bits)
 {
-  //  values from page 3 datasheet - MAX column (rounded up)
-  uint16_t del[5] = {600, 1200, 2300, 4600, 9100};
-
   uint8_t index = bits;
   if (index < 8) index = 8;
   else if (index > 12) index = 12;
   index -= 8;
   uint8_t offset = index * 2;
   command(addr + offset);
+
+  //  values from page 3 datasheet - MAX column (rounded up)
+  uint16_t del[5] = {600, 1200, 2300, 4600, 9100};
 
   uint16_t waitTime = del[index];
   uint32_t start = micros();

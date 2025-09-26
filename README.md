@@ -28,13 +28,16 @@ An experimental SPI version of the library can be found here
 A derived I2C library for the STM32 can be found here
 - https://github.com/Zakrzewiaczek/ms5611-stm32
 
+### Version 0.5.0 
+
+As the getAltitude() function had a bug it is advised to use version 0.5.0 or up.
+Older versions are considered obsolete.
 
 ### Compatibility
 
 The library should be compatible with MS56XX, MS57xx and MS58xx devices (to be tested). 
 Some device types will returns only 50% of the pressure value. 
 This is solved in version 0.3.9 by calling **reset(1)** to select the math method used.
-
 
 ### Self heating
 
@@ -45,10 +48,10 @@ temperature as a problem to being the solution.
 
 The sensor is primary a pressure sensor and if it is heated by a cause (don't care) 
 it needs compensation. For that the temperature sensor is build in the device. 
-Depending on the configuration self heating can be as low as 0.1°C to as high as 10++ °C.
+Depending on the configuration self heating can be as low as 0.1 °C to as high as 10++ °C.
 
 **WARNING** One should **NOT** use 5V to control I2C address line, SPI select, or 
-the protocol select line. This causes extreme heat build up > 10°C. 
+the protocol select line. This causes extreme heat build up > 10 °C. 
 
 One should only use 3V3 lines for these "selection lines".
 
@@ -239,6 +242,7 @@ Default the offset is set to 0.
 based upon actual pressure measured and the current pressure at sea level (parameter airPressure).
 Returns the altitude in meters.
 Multiple calls will return the same altitude until a new pressure is **read()**.
+- **float getAltitudeFeet(float airPressure)** idem but returns altitude in feet.
 
 
 ### Misc

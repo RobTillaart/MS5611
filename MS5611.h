@@ -3,7 +3,7 @@
 //    FILE: MS5611.h
 //  AUTHOR: Rob Tillaart
 //          Erni - testing/fixes
-// VERSION: 0.4.2
+// VERSION: 0.5.0
 // PURPOSE: Arduino library for MS5611 temperature and pressure sensor
 //     URL: https://github.com/RobTillaart/MS5611
 
@@ -31,7 +31,7 @@
 //  CS to GND  ==>  0x77
 
 
-#define MS5611_LIB_VERSION                    (F("0.4.2"))
+#define MS5611_LIB_VERSION                    (F("0.5.0"))
 
 #ifndef MS5611_DEFAULT_ADDRESS
 #define MS5611_DEFAULT_ADDRESS                0x77
@@ -78,7 +78,7 @@ public:
   //  oversampling rate is in osr_t
   osr_t    getOversampling() const { return (osr_t) _samplingRate; };
 
-  //  temperature is in ²C
+  //  temperature is in degrees C
   float    getTemperature() const;
 
   //  pressure is in mBar
@@ -95,7 +95,10 @@ public:
   float    getTemperatureOffset() { return _temperatureOffset; };
 
   //  ALTITUDE (from MS5837)
+  //  air pressure in mBar, returns meters
   float    getAltitude(float airPressure = 1013.25);
+  //  idem, returns feet.
+  float    getAltitudeFeet(float airPressure = 1013.25);
 
 
   //  to check for failure
