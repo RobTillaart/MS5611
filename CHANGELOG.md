@@ -8,7 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.5.0] - 2025-09-26
 - fix #44, getAltitude()
+- sync MS5611_SPI
 - add **getAltitudeFeet(float airPressure)**
+- moved code to .cpp
+- update keywords.txt
 - minor edits
 
 ----

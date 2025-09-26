@@ -11,12 +11,12 @@
 
 # MS5611
 
-Arduino library for MS5611 temperature and pressure sensor.
+Arduino library (I2C) for MS5611 temperature and pressure sensor.
 
 
 ## Description
 
-The MS5611-01BA03 is a high resolution pressure (and temperature) sensor a.k.a GY-63.
+The MS5611-01BA03 is a high resolution pressure and temperature sensor a.k.a GY-63.
 The high resolution is made possible by oversampling many times.
 
 The device address is 0x76 or 0x77 depending on the CSB/CSO pin.
@@ -28,18 +28,18 @@ An experimental SPI version of the library can be found here
 A derived I2C library for the STM32 can be found here
 - https://github.com/Zakrzewiaczek/ms5611-stm32
 
-### Version 0.5.0 
+Feedback as always is welcome.
 
-As the getAltitude() function had a bug it is advised to use version 0.5.0 or up.
-Older versions are considered obsolete.
 
 ### Compatibility
 
 The library should be compatible with MS56XX, MS57xx and MS58xx devices (to be tested). 
-Some device types will returns only 50% of the pressure value. 
-This is solved in version 0.3.9 by calling **reset(1)** to select the math method used.
 
-### Self heating
+Note: Some device types will return only 50% of the pressure value. 
+This is solved by calling **reset(1)** to select the math method used.
+
+
+### Self heating problem
 
 In some configurations especially when using SPI the sensor showed a self heating effect. 
 First this was approached as a problem, so investigations were done to understand the 
@@ -53,7 +53,7 @@ Depending on the configuration self heating can be as low as 0.1 °C to as high 
 **WARNING** One should **NOT** use 5V to control I2C address line, SPI select, or 
 the protocol select line. This causes extreme heat build up > 10 °C. 
 
-One should only use 3V3 lines for these "selection lines".
+**One should only use 3V3 lines for these "selection lines".**
 
 See also - https://github.com/RobTillaart/MS5611_SPI/issues/3
 
@@ -112,14 +112,16 @@ too if they are behind the multiplexer.
 - https://github.com/RobTillaart/TCA9548
 
 
-### Related
+### Related libraries
 
-- https://github.com/RobTillaart/pressure pressure conversions
-- https://github.com/RobTillaart/Temperature temperature conversions 
-- https://github.com/RobTillaart/MS5837 temperature pressure sensor 
-- https://github.com/RobTillaart/MSP300 industrial pressure transducer
+- https://github.com/RobTillaart/pressure - pressure conversions
+- https://github.com/RobTillaart/Temperature - temperature conversions 
+- https://github.com/RobTillaart/MS5837 - temperature pressure sensor 
+- https://github.com/RobTillaart/MS5611
+- https://github.com/RobTillaart/MS5611_SPI
+- https://github.com/RobTillaart/MSP300 - industrial pressure transducer
 - https://swharden.com/blog/2017-04-29-precision-pressure-meter-project/
-- https://github.com/Zakrzewiaczek/ms5611-stm32  derived library for STM32 boards.
+- https://github.com/Zakrzewiaczek/ms5611-stm32 - derived library for STM32 boards.
 
 
 ## Release Notes (major)
@@ -130,6 +132,7 @@ too if they are behind the multiplexer.
 - temperature is a float expressed in degrees Celsius.
 - pressure is a float expressed in mBar.
 
+
 ### 0.3.5 NANO 33 BLE
 
 The I2C/Wire library of the NANO 33 BLE does not see the device on the I2C bus. 
@@ -137,6 +140,7 @@ After hours of testing it looks like that the I2C/Wire library of the NANO 33 BL
 does not handle **isConnected()** like other platforms do. 
 Adding a **wire->write(0x00)** in **isConnected()** fixes the problem, 
 however more investigation is needed to understand the root cause.
+
 
 ### 0.3.9 pressure math 
 
@@ -151,6 +155,7 @@ The library implements **reset(uint8_t mathMode = 0)** to select the mathMode.
 
 See issue #33.
 
+
 ### 0.4.0 breaking change
 
 refactored the Wire dependency. Affected are:
@@ -159,6 +164,12 @@ refactored the Wire dependency. Affected are:
 
 User has to call **Wire.begin()** (or equivalent) and optional set the I2C pins
 before calling **ms5611.begin()** to initialize the library.
+
+
+### 0.5.0 Breaking change
+
+As the getAltitude() function had a bug it is advised to use version 0.5.0 or up.
+Older versions are considered obsolete.
 
 
 ## Interface MS5611
@@ -171,8 +182,7 @@ before calling **ms5611.begin()** to initialize the library.
 
 - **MS5611(uint8_t deviceAddress = MS5611_DEFAULT_ADDRESS, TwoWire \*wire = &Wire)** constructor.
 Since 0.3.7 a default address 0x77 is added. Optionally one can set the Wire interface.
-- **bool begin()**
-Initializes internals by calling reset().
+- **bool begin()** Initializes internals, by calling reset().
 Return false indicates either isConnected() error or reset() error.  
 One must call **Wire.begin()** (or equivalent) before calling **begin()**.
 - **bool isConnected()** checks availability of the device address set in the constructor 
@@ -283,7 +293,7 @@ No reference found to these PROM fields.
 
 ### 2nd order pressure compensation
 
-- **setCompensation(bool flag = true)** to enable/desirable the 2nd order compensation. 
+- **setCompensation(bool flag = true)** to enable/disable the 2nd order compensation. 
 The default = true. 
 Disabling the compensation will be slightly faster but you loose precision.
 - **getCompensation()** returns flag set above.
@@ -306,6 +316,7 @@ Return false indicates either isConnected() error or reset() error.
 #### Must
 
 - update documentation
+- sync with MS5611_SPI library
 
 #### Should
 
@@ -319,7 +330,6 @@ Return false indicates either isConnected() error or reset() error.
 - redo lower level functions?
 - handle the read + math of temperature first?
 - find meaning PROM values, esp. 0 and 7
-- move all code to .cpp
 - add function to verify the CRC of the PROM
 
 

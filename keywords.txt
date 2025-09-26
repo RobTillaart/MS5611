@@ -9,6 +9,7 @@ MS5607	KEYWORD1
 # Methods and Functions (KEYWORD2)
 begin	KEYWORD2
 isConnected	KEYWORD2
+getAddress	KEYWORD2
 
 reset	KEYWORD2
 read	KEYWORD2
@@ -19,9 +20,6 @@ getOversampling	KEYWORD2
 getTemperature	KEYWORD2
 getPressure	KEYWORD2
 getPressurePascal	KEYWORD2
-
-getLastResult	KEYWORD2
-lastRead	KEYWORD2
 
 setTemperatureOffset	KEYWORD2
 getTemperatureOffset	KEYWORD2

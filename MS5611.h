@@ -4,7 +4,7 @@
 //  AUTHOR: Rob Tillaart
 //          Erni - testing/fixes
 // VERSION: 0.5.0
-// PURPOSE: Arduino library for MS5611 temperature and pressure sensor
+// PURPOSE: Arduino library for MS5611 (I2C) temperature and pressure sensor
 //     URL: https://github.com/RobTillaart/MS5611
 
 
@@ -37,6 +37,7 @@
 #define MS5611_DEFAULT_ADDRESS                0x77
 #endif
 
+
 #define MS5611_READ_OK                        0
 #define MS5611_ERROR_2                        2         //  low level I2C error
 #define MS5611_NOT_READ                       -999
@@ -44,11 +45,11 @@
 
 enum osr_t
 {
-    OSR_ULTRA_HIGH = 12,        // 10 millis
-    OSR_HIGH       = 11,        //  5 millis
-    OSR_STANDARD   = 10,        //  3 millis
-    OSR_LOW        = 9,         //  2 millis
-    OSR_ULTRA_LOW  = 8          //  1 millis    Default = backwards compatible
+  OSR_ULTRA_HIGH = 12,        // 10 millis
+  OSR_HIGH       = 11,        //  5 millis
+  OSR_STANDARD   = 10,        //  3 millis
+  OSR_LOW        = 9,         //  2 millis
+  OSR_ULTRA_LOW  = 8          //  1 millis    Default = backwards compatible
 };
 
 
@@ -76,23 +77,22 @@ public:
   void     setOversampling(osr_t samplingRate);
 
   //  oversampling rate is in osr_t
-  osr_t    getOversampling() const { return (osr_t) _samplingRate; };
+  osr_t    getOversampling() const;
 
   //  temperature is in degrees C
   float    getTemperature() const;
-
   //  pressure is in mBar
   float    getPressure() const;
-  //  pressure is in Pascal (SI-unit) - 0.4.1
+  //  pressure is in Pascal (SI-unit)
   float    getPressurePascal() const;
 
-  //  OFFSET - 0.3.6
+  //  OFFSET
   //  pressure offset is in mBar.
-  void     setPressureOffset(float offset = 0)    { _pressureOffset = offset; };
-  float    getPressureOffset()    { return _pressureOffset; };
+  void     setPressureOffset(float offset = 0);
+  float    getPressureOffset();
   //  temperature offset in degrees C.
-  void     setTemperatureOffset(float offset = 0) { _temperatureOffset = offset; };
-  float    getTemperatureOffset() { return _temperatureOffset; };
+  void     setTemperatureOffset(float offset = 0);
+  float    getTemperatureOffset();
 
   //  ALTITUDE (from MS5837)
   //  air pressure in mBar, returns meters
@@ -100,19 +100,17 @@ public:
   //  idem, returns feet.
   float    getAltitudeFeet(float airPressure = 1013.25);
 
-
   //  to check for failure
-  int      getLastResult() const   { return _result; };
+  int      getLastResult() const;
 
   //  last time in millis() when the sensor has been read.
-  uint32_t lastRead() const        { return _lastRead; };
+  uint32_t lastRead() const;
 
   //  _deviceID is a SHIFT XOR merge of 7 PROM registers, reasonable unique
-  uint32_t getDeviceID() const     { return _deviceID; };
+  uint32_t getDeviceID() const;
 
-  void     setCompensation(bool flag = true) { _compensation = flag; };
-  bool     getCompensation() { return _compensation; };
-
+  void     setCompensation(bool flag = true);
+  bool     getCompensation();
 
   //       EXPERIMENTAL
   uint16_t getManufacturer();
@@ -121,8 +119,10 @@ public:
   //       DEVELOP
   uint16_t getProm(uint8_t index);
   uint16_t getCRC();
+
+  //  develop functions.
   /*
-  void     setAddress(uint8_t address) { _address = address; };  // RANGE CHECK + isConnected() !
+  void     setAddress(uint8_t address) { _address = address; };  // RANGE CHECK
   uint8_t  detectAddress() { todo };  // works with only one on the bus?
   */
 
